@@ -8,17 +8,17 @@
         {%- if product.featured_image != blank -%}
           <img
             class="product-img-primary"
-            src="{{ product.featured_image | img_url: '500x500', crop: 'center' }}"
+            src="{{ product.featured_image | img_url: '600x800', crop: 'top' }}"
             alt="{{ product.featured_image.alt | escape }}"
             loading="lazy"
-            width="500" height="500">
+            width="600" height="800">
           {%- if product.images.size > 1 -%}
             <img
               class="product-img-secondary"
-              src="{{ product.images[1] | img_url: '500x500', crop: 'center' }}"
+              src="{{ product.images[1] | img_url: '600x800', crop: 'top' }}"
               alt="{{ product.images[1].alt | escape }}"
               loading="lazy"
-              width="500" height="500">
+              width="600" height="800">
           {%- endif -%}
         {%- else -%}
           <span style="font-size:3rem;color:var(--purple-light);opacity:0.4;">◆</span>
