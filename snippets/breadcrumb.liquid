@@ -1,6 +1,20 @@
-<div class="breadcrumb">
+{% comment %}
+  Usage:
+  - Pages:    {% render 'breadcrumb', breadcrumb_title: 'About' %}
+  - Products: {% render 'breadcrumb', breadcrumb_title: product.title, breadcrumb_collection: product.collections.first %}
+  - Collections: {% render 'breadcrumb', breadcrumb_title: collection.title %}
+{% endcomment %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
   <a href="{{ routes.root_url }}">Home</a>
-  {%- if breadcrumb_title != blank -%}
-    / {{ breadcrumb_title }}
+
+  {%- if breadcrumb_collection != blank -%}
+    <span class="bc-sep">›</span>
+    <a href="{{ breadcrumb_collection.url }}">{{ breadcrumb_collection.title }}</a>
   {%- endif -%}
-</div>
+
+  {%- if breadcrumb_title != blank -%}
+    <span class="bc-sep">›</span>
+    <span class="bc-current">{{ breadcrumb_title }}</span>
+  {%- endif -%}
+</nav>

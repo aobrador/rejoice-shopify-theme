@@ -1,5 +1,6 @@
 <div class="page-hero" style="padding:40px 48px 30px;">
-  {% render 'breadcrumb', breadcrumb_title: product.title %}
+  {%- assign bc_collection = collection | default: product.collections.first -%}
+  {% render 'breadcrumb', breadcrumb_title: product.title, breadcrumb_collection: bc_collection %}
 </div>
 
 <div class="section" style="padding-top:32px;">
