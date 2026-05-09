@@ -233,7 +233,7 @@ async function loadCartDrawer() {
         : '';
       return `
         <div class="drawer-item" data-key="${item.key}" data-index="${index + 1}">
-          ${imgSrc ? `<a href="${item.url}"><img class="drawer-item-img" src="${imgSrc}" alt="${item.product_title}" /></a>` : ''}
+          ${imgSrc ? `<a href="${item.url}" onclick="closeCartDrawer()"><img class="drawer-item-img" src="${imgSrc}" alt="${item.product_title}" /></a>` : ''}
           <div class="drawer-item-info">
             <div class="drawer-item-title">${item.product_title}</div>
             ${item.variant_title && item.variant_title !== 'Default Title'
@@ -247,8 +247,8 @@ async function loadCartDrawer() {
               <div class="drawer-item-price">${moneyFormat(item.final_line_price)}</div>
             </div>
           </div>
-          <button class="drawer-remove-btn" onclick="drawerRemoveItem('${item.key}')" title="Remove">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <button class="drawer-remove-btn" onclick="drawerRemoveItem('${item.key}')" title="Remove item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>`;
     }).join('');
