@@ -14,7 +14,7 @@
         {%- for type in payment_types -%}
           <img src="{{ type | payment_type_img_url }}"
                alt="{{ type | replace: '_', ' ' | capitalize }}"
-               style="height:28px;width:auto;border-radius:4px;background:#fff;padding:2px 5px;">
+               style="height:28px;width:auto;border-radius:4px;padding:2px 5px;filter:brightness(0) invert(1);">
         {%- endfor -%}
       </div>
 

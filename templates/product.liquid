@@ -180,6 +180,148 @@
   </div><!-- /product-detail-grid -->
 </div>
 
+<!-- ══════════════════════════════════════════════
+     PRODUCT TABS — Description / Additional Info / Size Chart / Reviews
+══════════════════════════════════════════════ -->
+<div class="section" style="padding-top:0;">
+  <div class="product-tabs-wrap">
+
+    <div class="product-tab-nav" role="tablist">
+      <button class="product-tab-btn active" data-tab="description" role="tab">Description</button>
+      <button class="product-tab-btn" data-tab="additional" role="tab">Additional Info</button>
+      <button class="product-tab-btn" data-tab="sizechart" role="tab">Size Chart</button>
+      <button class="product-tab-btn" data-tab="reviews" role="tab">Reviews</button>
+    </div>
+
+    <!-- Description -->
+    <div class="product-tab-panel active" id="tab-description">
+      {%- if product.description != blank -%}
+        <div class="product-description" style="margin-top:0;border-top:none;padding-top:0;">
+          {{ product.description }}
+        </div>
+      {%- else -%}
+        <p style="color:var(--text-muted);">No description available for this product.</p>
+      {%- endif -%}
+    </div>
+
+    <!-- Additional Info -->
+    <div class="product-tab-panel" id="tab-additional">
+      <table style="width:100%;border-collapse:collapse;font-size:0.92rem;">
+        {%- if product.variants.first.weight > 0 -%}
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 0;color:var(--text-muted);width:160px;font-weight:700;">Weight</td>
+            <td style="padding:12px 0;color:var(--text);">{{ product.variants.first.weight }} {{ product.variants.first.weight_unit }}</td>
+          </tr>
+        {%- endif -%}
+        {%- if product.vendor != blank -%}
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 0;color:var(--text-muted);font-weight:700;">Vendor</td>
+            <td style="padding:12px 0;color:var(--text);">{{ product.vendor }}</td>
+          </tr>
+        {%- endif -%}
+        {%- if product.type != blank -%}
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 0;color:var(--text-muted);font-weight:700;">Type</td>
+            <td style="padding:12px 0;color:var(--text);">{{ product.type }}</td>
+          </tr>
+        {%- endif -%}
+        {%- for option in product.options_with_values -%}
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 0;color:var(--text-muted);font-weight:700;">{{ option.name }}</td>
+            <td style="padding:12px 0;color:var(--purple);">{{ option.values | join: ', ' }}</td>
+          </tr>
+        {%- endfor -%}
+        {%- if product.tags.size > 0 -%}
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 0;color:var(--text-muted);font-weight:700;">Tags</td>
+            <td style="padding:12px 0;color:var(--text);">{{ product.tags | join: ', ' }}</td>
+          </tr>
+        {%- endif -%}
+        {%- if product.variants.first.sku != blank -%}
+          <tr>
+            <td style="padding:12px 0;color:var(--text-muted);font-weight:700;">SKU</td>
+            <td style="padding:12px 0;color:var(--text);">{{ product.variants.first.sku }}</td>
+          </tr>
+        {%- endif -%}
+      </table>
+      <p style="margin-top:20px;font-size:0.82rem;color:var(--text-muted);">🧺 Hand Wash or Dry Clean Only &nbsp;·&nbsp; Made to Order in Hialeah, FL</p>
+    </div>
+
+    <!-- Size Chart -->
+    <div class="product-tab-panel" id="tab-sizechart">
+      <p style="margin-bottom:20px;font-size:0.9rem;color:var(--text-muted);">All measurements in inches. When between sizes, size up for freedom of movement.</p>
+
+      <p style="font-family:'Cinzel',serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">👗 Adult Woman</p>
+      <div class="table-wrapper" style="margin-bottom:28px;">
+        <table><thead><tr><th></th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>1X</th><th>2X</th><th>3X</th><th>4X</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Bust</strong></td><td>31–32″</td><td>33–34″</td><td>34–36″</td><td>37–39″</td><td>40–42″</td><td>42–43″</td><td>44–46″</td><td>48–50″</td><td>52–54″</td></tr>
+          <tr><td><strong>Hips</strong></td><td>32–34″</td><td>35–36″</td><td>37–38″</td><td>39–42″</td><td>42–44″</td><td>44–46″</td><td>46–48″</td><td>50–52″</td><td>54–56″</td></tr>
+          <tr><td><strong>Waist</strong></td><td>22–24″</td><td>25–26″</td><td>27–29″</td><td>30–32″</td><td>33–36″</td><td>37–40″</td><td>41–43″</td><td>43–45″</td><td>46–50″</td></tr>
+        </tbody></table>
+      </div>
+
+      <p style="font-family:'Cinzel',serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">👧 Kids &amp; Teen</p>
+      <div class="table-wrapper" style="margin-bottom:28px;">
+        <table><thead><tr><th></th><th>XS 3/4</th><th>S 5/6</th><th>M 7/8</th><th>L 10/12</th><th>XL 14/16</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Bust</strong></td><td>20–23″</td><td>24–26″</td><td>27–29″</td><td>30–31″</td><td>32–34″</td></tr>
+          <tr><td><strong>Hips</strong></td><td>22–24″</td><td>25–27″</td><td>28–30″</td><td>31–33″</td><td>34–36″</td></tr>
+          <tr><td><strong>Waist</strong></td><td>19–21″</td><td>22–23″</td><td>24–25″</td><td>26–28″</td><td>27–29″</td></tr>
+        </tbody></table>
+      </div>
+
+      <p style="font-family:'Cinzel',serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">👔 Adult Men</p>
+      <div class="table-wrapper">
+        <table><thead><tr><th></th><th>S</th><th>M</th><th>L</th><th>XL</th><th>1X</th><th>2X</th><th>3X</th><th>4X</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Chest</strong></td><td>24–37″</td><td>38–40″</td><td>41–43″</td><td>44–47″</td><td>48–51″</td><td>52–55″</td><td>56–58″</td><td>59–61″</td></tr>
+          <tr><td><strong>Waist</strong></td><td>28–32″</td><td>33–35″</td><td>36–38″</td><td>39–42″</td><td>43–47″</td><td>48–51″</td><td>52–55″</td><td>56–59″</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="product-tab-panel" id="tab-reviews">
+      <div id="shopify-product-reviews" data-id="{{ product.id }}">
+        <div style="text-align:center;padding:40px 20px;">
+          <div style="font-size:3rem;margin-bottom:12px;">⭐</div>
+          <h3 style="font-family:'Cinzel',serif;color:var(--purple-dark);margin-bottom:8px;">No Reviews Yet</h3>
+          <p style="color:var(--text-muted);margin-bottom:24px;">Be the first to share your experience with this garment!</p>
+          <p style="font-size:0.82rem;color:var(--text-muted);">To enable customer reviews, install the free <strong>Shopify Product Reviews</strong> app from the Shopify App Store.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     YOU MAY ALSO LIKE
+══════════════════════════════════════════════ -->
+{%- assign related_col = product.collections | first -%}
+{%- assign related_products = related_col.products -%}
+{%- if related_products.size > 1 -%}
+  <div class="section-full section-gray">
+    <div style="max-width:1280px;margin:0 auto;">
+      <div class="section-title" style="margin-bottom:40px;">
+        <span class="eyebrow">From the Same Collection</span>
+        <h2>You May Also Like</h2>
+        <div class="divider-purple"></div>
+      </div>
+      <div class="products-grid">
+        {%- assign shown = 0 -%}
+        {%- for p in related_products -%}
+          {%- unless p.id == product.id or shown >= 4 -%}
+            {% render 'product-card', product: p %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
 <!-- Lightbox modal -->
 <div id="img-lightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;">
   <img id="lightbox-img" src="" alt="" style="max-width:92vw;max-height:92vh;border-radius:8px;object-fit:contain;" onclick="event.stopPropagation()" />
@@ -601,4 +743,79 @@
   .product-detail-grid { grid-template-columns: 1fr; gap: 32px; }
   .product-gallery { position: static; }
 }
+
+/* ── Product Tabs ── */
+.product-tabs-wrap {
+  margin-top: 0;
+  border-top: 3px solid var(--purple-pale);
+}
+.product-tab-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.product-tab-nav::-webkit-scrollbar { display: none; }
+.product-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  padding: 16px 28px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.product-tab-btn:hover { color: var(--purple); }
+.product-tab-btn.active {
+  color: var(--purple-dark);
+  border-bottom-color: var(--purple);
+}
+.product-tab-panel {
+  display: none;
+  padding: 32px 0;
+  animation: fadeTab 0.25s ease;
+}
+.product-tab-panel.active { display: block; }
+@keyframes fadeTab {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* You May Also Like grid spacing */
+.section-full {
+  width: 100%;
+  padding: 60px 48px;
+  box-sizing: border-box;
+}
+.section-gray { background: var(--bg-soft); }
+
+@media (max-width: 700px) {
+  .product-tab-btn { padding: 12px 16px; font-size: 0.78rem; }
+  .section-full { padding: 40px 20px; }
+}
 </style>
+
+<script>
+/* ── Tab switching ── */
+document.addEventListener('DOMContentLoaded', function() {
+  var tabBtns   = document.querySelectorAll('.product-tab-btn');
+  var tabPanels = document.querySelectorAll('.product-tab-panel');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.getAttribute('data-tab');
+      tabBtns.forEach(function(b) { b.classList.remove('active'); });
+      tabPanels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      var panel = document.getElementById('tab-' + target);
+      if (panel) panel.classList.add('active');
+    });
+  });
+});
+</script>
