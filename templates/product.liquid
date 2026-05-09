@@ -281,16 +281,9 @@
       </div>
     </div>
 
-    <!-- Reviews -->
+    <!-- Reviews — powered by Judge.me -->
     <div class="product-tab-panel" id="tab-reviews">
-      <div id="shopify-product-reviews" data-id="{{ product.id }}">
-        <div style="text-align:center;padding:40px 20px;">
-          <div style="font-size:3rem;margin-bottom:12px;">⭐</div>
-          <h3 style="font-family:'Cinzel',serif;color:var(--purple-dark);margin-bottom:8px;">No Reviews Yet</h3>
-          <p style="color:var(--text-muted);margin-bottom:24px;">Be the first to share your experience with this garment!</p>
-          <p style="font-size:0.82rem;color:var(--text-muted);">To enable customer reviews, install the free <strong>Shopify Product Reviews</strong> app from the Shopify App Store.</p>
-        </div>
-      </div>
+      {% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: true, product: product %}
     </div>
 
   </div>

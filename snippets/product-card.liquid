@@ -36,6 +36,8 @@
       {%- endif -%}
     </div>
 
+    {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', concierge_install: true, product: product %}
+
     {%- if product.available -%}
       <form action="{{ routes.cart_add_url }}" method="post" class="add-to-cart-form">
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
