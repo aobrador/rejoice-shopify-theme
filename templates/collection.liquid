@@ -1,47 +1,350 @@
-<div class="page-hero">
-  {% render 'breadcrumb', breadcrumb_title: collection.title %}
-  <h1>{{ collection.title }}</h1>
-  {%- if collection.description != blank -%}
-    <p>{{ collection.description | strip_html }}</p>
-  {%- endif -%}
+<!-- Collection hero -->
+<div class="collection-hero">
+  <div class="collection-hero-inner">
+    <span class="eyebrow">
+      {%- if collection.handle == 'all' -%}All Products{%- else -%}Collection{%- endif -%}
+    </span>
+    <h1>{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p>{{ collection.description | strip_html }}</p>
+    {%- endif -%}
+  </div>
 </div>
 
-<div class="section">
-  {%- comment -%} Filter bar — links to sub-collections or all collections {%- endcomment -%}
-  <div class="filter-bar">
-    <a class="filter-btn {% if collection.handle == 'all' %}active{% endif %}" href="{{ routes.all_products_collection_url }}">All</a>
-    {%- for c in collections limit: 8 -%}
-      <a class="filter-btn {% if c.handle == collection.handle %}active{% endif %}" href="{{ c.url }}">{{ c.title }}</a>
-    {%- endfor -%}
-  </div>
+{%- paginate collection.products by 24 -%}
 
-  <div class="products-grid">
-    {%- paginate collection.products by 24 -%}
-      {%- for product in collection.products -%}
-        {% render 'product-card', product: product %}
-      {%- else -%}
-        <p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:60px 0;">
-          No products in this collection yet.
-        </p>
-      {%- endfor -%}
-    {%- endpaginate -%}
-  </div>
+<div class="shop-layout">
 
-  {%- if paginate.pages > 1 -%}
-    <div style="display:flex;justify-content:center;gap:10px;margin-top:50px;flex-wrap:wrap;">
-      {%- if paginate.previous -%}
-        <a class="filter-btn" href="{{ paginate.previous.url }}">← Previous</a>
-      {%- endif -%}
-      {%- for part in paginate.parts -%}
-        {%- if part.is_link -%}
-          <a class="filter-btn" href="{{ part.url }}">{{ part.title }}</a>
-        {%- else -%}
-          <span class="filter-btn active">{{ part.title }}</span>
-        {%- endif -%}
-      {%- endfor -%}
-      {%- if paginate.next -%}
-        <a class="filter-btn" href="{{ paginate.next.url }}">Next →</a>
-      {%- endif -%}
+  <!-- Sidebar filters -->
+  <aside class="shop-sidebar">
+    <div class="sidebar-section">
+      <h3 class="sidebar-heading">Collections</h3>
+      <ul class="sidebar-list">
+        <li>
+          <a class="sidebar-link {% if collection.handle == 'all' %}active{% endif %}"
+             href="{{ routes.all_products_collection_url }}">
+            All Products
+            <span class="sidebar-count">{{ collections | map: 'products_count' | sum }}</span>
+          </a>
+        </li>
+        {%- for c in collections -%}
+          {%- unless c.handle == 'frontpage' -%}
+            <li>
+              <a class="sidebar-link {% if c.handle == collection.handle %}active{% endif %}"
+                 href="{{ c.url }}">
+                {{ c.title }}
+                <span class="sidebar-count">{{ c.products_count }}</span>
+              </a>
+            </li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
     </div>
-  {%- endif -%}
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-heading">Price Range</h3>
+      <ul class="sidebar-list">
+        <li><a class="sidebar-link" href="{{ collection.url }}?sort_by=price-ascending&filter.v.price.lte=50">Under $50</a></li>
+        <li><a class="sidebar-link" href="{{ collection.url }}?sort_by=price-ascending&filter.v.price.gte=50&filter.v.price.lte=100">$50 – $100</a></li>
+        <li><a class="sidebar-link" href="{{ collection.url }}?sort_by=price-ascending&filter.v.price.gte=100&filter.v.price.lte=150">$100 – $150</a></li>
+        <li><a class="sidebar-link" href="{{ collection.url }}?sort_by=price-ascending&filter.v.price.gte=150">$150 &amp; Above</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-heading">Sort By</h3>
+      <ul class="sidebar-list">
+        <li><a class="sidebar-link {% if collection.sort_by == 'manual' or collection.sort_by == blank %}active{% endif %}" href="{{ collection.url }}?sort_by=manual">Featured</a></li>
+        <li><a class="sidebar-link {% if collection.sort_by == 'best-selling' %}active{% endif %}" href="{{ collection.url }}?sort_by=best-selling">Best Selling</a></li>
+        <li><a class="sidebar-link {% if collection.sort_by == 'price-ascending' %}active{% endif %}" href="{{ collection.url }}?sort_by=price-ascending">Price: Low to High</a></li>
+        <li><a class="sidebar-link {% if collection.sort_by == 'price-descending' %}active{% endif %}" href="{{ collection.url }}?sort_by=price-descending">Price: High to Low</a></li>
+        <li><a class="sidebar-link {% if collection.sort_by == 'created-descending' %}active{% endif %}" href="{{ collection.url }}?sort_by=created-descending">Newest</a></li>
+        <li><a class="sidebar-link {% if collection.sort_by == 'title-ascending' %}active{% endif %}" href="{{ collection.url }}?sort_by=title-ascending">A – Z</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main product area -->
+  <div class="shop-main">
+
+    <!-- Top bar: count + mobile filter toggle -->
+    <div class="shop-topbar">
+      <p class="product-count">
+        <strong>{{ collection.products_count }}</strong> product{% if collection.products_count != 1 %}s{% endif %}
+        {%- if collection.handle != 'all' %} in <em>{{ collection.title }}</em>{%- endif -%}
+      </p>
+      <button class="mobile-filter-toggle" id="mobile-filter-toggle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Filter &amp; Sort
+      </button>
+    </div>
+
+    <!-- Products grid -->
+    {%- if collection.products.size > 0 -%}
+      <div class="products-grid">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="empty-collection">
+        <div style="font-size:3rem;margin-bottom:16px;color:var(--purple-light);">◆</div>
+        <h3>No products found</h3>
+        <p>Try a different collection or <a href="{{ routes.all_products_collection_url }}">browse all products</a>.</p>
+      </div>
+    {%- endif -%}
+
+    <!-- Pagination -->
+    {%- if paginate.pages > 1 -%}
+      <div class="pagination">
+        {%- if paginate.previous -%}
+          <a class="page-btn" href="{{ paginate.previous.url }}">&#8592; Prev</a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a class="page-btn" href="{{ part.url }}">{{ part.title }}</a>
+          {%- else -%}
+            <span class="page-btn active">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a class="page-btn" href="{{ paginate.next.url }}">Next &#8594;</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
 </div>
+
+{%- endpaginate -%}
+
+<!-- Mobile sidebar drawer -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<style>
+/* Collection hero */
+.collection-hero {
+  background: linear-gradient(135deg, var(--purple-pale), var(--purple-soft));
+  border-bottom: 1px solid var(--border);
+  padding: 60px 48px 50px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.collection-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(106,13,173,0.1) 0%, transparent 70%);
+}
+.collection-hero-inner { position: relative; z-index: 1; }
+.collection-hero .eyebrow {
+  display: inline-block;
+  color: var(--purple);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.collection-hero h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--purple-dark);
+  margin-bottom: 12px;
+}
+.collection-hero p {
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto;
+  font-size: 0.95rem;
+}
+
+/* Shop layout: sidebar + main */
+.shop-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+  padding: 0;
+}
+
+/* Sidebar */
+.shop-sidebar {
+  border-right: 1px solid var(--border);
+  padding: 36px 28px;
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  background: var(--white);
+}
+.shop-sidebar::-webkit-scrollbar { width: 4px; }
+.shop-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-section { margin-bottom: 36px; }
+.sidebar-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--purple-dark);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--purple-pale);
+}
+.sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.sidebar-link:hover { background: var(--purple-pale); color: var(--purple); }
+.sidebar-link.active { background: var(--purple-pale); color: var(--purple); font-weight: 700; }
+.sidebar-count {
+  font-size: 0.75rem;
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-weight: 600;
+}
+.sidebar-link.active .sidebar-count { background: rgba(106,13,173,0.12); color: var(--purple); }
+
+/* Main area */
+.shop-main { padding: 36px 40px; }
+
+.shop-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.product-count { font-size: 0.9rem; color: var(--text-muted); }
+.product-count strong { color: var(--purple-dark); }
+.product-count em { color: var(--purple); font-style: normal; font-weight: 600; }
+
+.mobile-filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mobile-filter-toggle:hover { border-color: var(--purple); color: var(--purple); }
+
+/* Empty state */
+.empty-collection {
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-collection h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--purple-dark);
+  margin-bottom: 10px;
+}
+.empty-collection p { color: var(--text-muted); }
+.empty-collection a { color: var(--purple); font-weight: 700; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 50px;
+  flex-wrap: wrap;
+}
+.page-btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text-mid);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.page-btn:hover, .page-btn.active {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: var(--purple-pale);
+}
+
+/* Mobile overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 199;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .shop-layout { grid-template-columns: 1fr; }
+  .shop-sidebar {
+    position: fixed;
+    top: 0; left: -280px;
+    width: 280px;
+    height: 100vh;
+    max-height: 100vh;
+    z-index: 200;
+    border-right: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    transition: left 0.3s ease;
+    padding-top: 60px;
+  }
+  .shop-sidebar.open { left: 0; }
+  .sidebar-overlay.open { display: block; }
+  .mobile-filter-toggle { display: flex; }
+  .shop-main { padding: 24px 20px; }
+  .collection-hero { padding: 40px 20px 32px; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var toggle = document.getElementById('mobile-filter-toggle');
+  var sidebar = document.querySelector('.shop-sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (!toggle || !sidebar || !overlay) return;
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  toggle.addEventListener('click', openSidebar);
+  overlay.addEventListener('click', closeSidebar);
+});
+</script>

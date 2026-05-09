@@ -10,21 +10,26 @@
   <ul class="nav-links" id="nav-links">
     <li><a href="{{ routes.root_url }}" {% if template == 'index' %}class="active"{% endif %}>Home</a></li>
     <li><a href="{{ pages['about'].url }}" {% if page.handle == 'about' %}class="active"{% endif %}>About</a></li>
-    <li><a href="{{ routes.collections_url }}" {% if template contains 'collection' %}class="active"{% endif %}>Shop</a></li>
+    <li><a href="{{ routes.all_products_collection_url }}" {% if template contains 'collection' %}class="active"{% endif %}>Shop</a></li>
     <li><a href="{{ pages['size-chart'].url }}" {% if page.handle == 'size-chart' %}class="active"{% endif %}>Size Chart</a></li>
     <li><a href="{{ pages['contact'].url }}" {% if page.handle == 'contact' %}class="active"{% endif %}>Contact</a></li>
   </ul>
 
   <div class="nav-actions">
     {%- if customer -%}
-      <a href="{{ routes.account_url }}" style="font-size:1.3rem;color:var(--text-mid);text-decoration:none;" title="My Account">👤</a>
+      <a href="{{ routes.account_url }}" class="nav-icon-btn" title="My Account">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
     {%- else -%}
-      <a href="{{ routes.account_login_url }}" style="font-size:1.3rem;color:var(--text-mid);text-decoration:none;" title="Sign In">👤</a>
+      <a href="{{ routes.account_login_url }}" class="nav-icon-btn" title="Sign In">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
     {%- endif -%}
-    <a class="nav-cart" href="{{ routes.cart_url }}">
-      🛒<span class="cart-badge" id="cart-badge">{{ cart.item_count }}</span>
+    <a class="nav-cart" href="{{ routes.cart_url }}" title="Cart">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="cart-badge" id="cart-badge">{{ cart.item_count }}</span>
     </a>
-    <a class="btn-nav" href="{{ routes.collections_url }}">Shop Now</a>
+    <a class="btn-nav" href="{{ routes.all_products_collection_url }}">Shop Now</a>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
