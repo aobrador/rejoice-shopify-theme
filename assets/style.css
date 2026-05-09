@@ -957,9 +957,10 @@ img { transition: opacity 0.3s ease; }
   background: rgba(0,0,0,0.55);
   z-index: 1300;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.25s ease;
 }
-.qv-overlay.open { display: block; opacity: 1; }
+.qv-overlay.open { display: block; opacity: 1; pointer-events: auto; }
 
 .qv-modal {
   display: none;
@@ -974,11 +975,13 @@ img { transition: opacity 0.3s ease; }
   z-index: 1400;
   box-shadow: 0 32px 80px rgba(0,0,0,0.22);
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 .qv-modal.open {
   display: block;
   opacity: 1;
+  pointer-events: auto;
   transform: translate(-50%, -50%);
 }
 

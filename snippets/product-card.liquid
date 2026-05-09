@@ -81,6 +81,7 @@
   display: flex; align-items: center; justify-content: center;
   background: rgba(75, 0, 130, 0.45);
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease;
 }
 .quick-view-btn {
@@ -102,5 +103,5 @@
   background: rgba(255,255,255,0.18);
   border-color: #fff;
 }
-.product-card:hover .product-img-overlay { opacity: 1; }
+.product-card:hover .product-img-overlay { opacity: 1; pointer-events: auto; }
 </style>
