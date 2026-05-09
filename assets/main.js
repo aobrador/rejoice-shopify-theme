@@ -198,12 +198,11 @@ function closeCartDrawer() {
 }
 
 async function loadCartDrawer() {
-  const body   = document.getElementById('cart-drawer-body');
-  const footer = document.getElementById('cart-drawer-footer');
-  const countEl= document.getElementById('drawer-item-count');
+  const body    = document.getElementById('cart-drawer-body');
+  const footer  = document.getElementById('cart-drawer-footer');
+  const countEl = document.getElementById('drawer-item-count');
   if (!body) return;
 
-  // Show spinner
   body.innerHTML = '<div class="cart-drawer-loading"><div class="drawer-spinner"></div></div>';
   if (footer) footer.style.display = 'none';
 
@@ -211,46 +210,77 @@ async function loadCartDrawer() {
     const res  = await fetch('/cart.js');
     const cart = await res.json();
 
-    // Update nav badges
     document.querySelectorAll('.cart-badge').forEach(b => b.textContent = cart.item_count || 0);
     if (countEl) countEl.textContent = cart.item_count || 0;
 
     if (cart.item_count === 0) {
       body.innerHTML = `
         <div class="drawer-empty">
-          <div class="drawer-empty-icon">◆</div>
+          <div class="drawer-empty-icon">🛍️</div>
           <h4>Your cart is empty</h4>
-          <p>Looks like you haven't added anything yet.</p>
-          <a href="/collections/all" class="btn-primary" style="display:inline-block;padding:12px 28px;border-radius:50px;">Shop Now</a>
+          <p>Add some beautiful garments to get started.</p>
+          <a href="/collections/all" class="btn-primary" onclick="closeCartDrawer()"
+             style="display:inline-block;padding:12px 28px;border-radius:50px;font-size:0.88rem;">
+            Shop Now
+          </a>
         </div>`;
       return;
     }
 
-    // Render items
-    body.innerHTML = cart.items.map(item => `
-      <div class="drawer-item">
-        <a href="${item.url}">
-          <img class="drawer-item-img"
-               src="${item.image ? item.image.replace(/(\.[^.]+)$/, '_160x160$1') : ''}"
-               alt="${item.product_title}" />
-        </a>
-        <div class="drawer-item-info">
-          <div class="drawer-item-title">${item.product_title}</div>
-          ${item.variant_title && item.variant_title !== 'Default Title' ? `<div class="drawer-item-variant">${item.variant_title}</div>` : ''}
-          <div class="drawer-item-price">${moneyFormat(item.final_line_price)}</div>
-          <div class="drawer-item-qty">Qty: ${item.quantity}</div>
-        </div>
-      </div>`).join('');
+    body.innerHTML = cart.items.map((item, index) => {
+      const imgSrc = item.featured_image && item.featured_image.url
+        ? item.featured_image.url.replace(/(\.[^.?]+)(\?|$)/, '_160x160$1$2')
+        : '';
+      return `
+        <div class="drawer-item" data-key="${item.key}" data-index="${index + 1}">
+          ${imgSrc ? `<a href="${item.url}"><img class="drawer-item-img" src="${imgSrc}" alt="${item.product_title}" /></a>` : ''}
+          <div class="drawer-item-info">
+            <div class="drawer-item-title">${item.product_title}</div>
+            ${item.variant_title && item.variant_title !== 'Default Title'
+              ? `<div class="drawer-item-variant">${item.variant_title}</div>` : ''}
+            <div class="drawer-item-bottom">
+              <div class="drawer-qty-wrap">
+                <button class="drawer-qty-btn" onclick="drawerChangeQty('${item.key}', ${item.quantity - 1})">−</button>
+                <div class="drawer-qty-num">${item.quantity}</div>
+                <button class="drawer-qty-btn" onclick="drawerChangeQty('${item.key}', ${item.quantity + 1})">+</button>
+              </div>
+              <div class="drawer-item-price">${moneyFormat(item.final_line_price)}</div>
+            </div>
+          </div>
+          <button class="drawer-remove-btn" onclick="drawerRemoveItem('${item.key}')" title="Remove">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>`;
+    }).join('');
 
-    // Show footer
     if (footer) {
       footer.style.display = 'block';
       const subtotalEl = document.getElementById('drawer-subtotal');
       if (subtotalEl) subtotalEl.textContent = moneyFormat(cart.total_price);
+      const countNote = document.getElementById('drawer-item-count-note');
+      if (countNote) countNote.textContent = cart.item_count + ' item' + (cart.item_count !== 1 ? 's' : '');
     }
   } catch (e) {
     body.innerHTML = '<p style="padding:24px;color:var(--text-muted);">Could not load cart. Please try again.</p>';
   }
+}
+
+async function drawerChangeQty(key, newQty) {
+  if (newQty < 0) return;
+  try {
+    await fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: key, quantity: newQty })
+    });
+    loadCartDrawer();
+  } catch (e) { /* silent */ }
+}
+
+async function drawerRemoveItem(key) {
+  const item = document.querySelector(`.drawer-item[data-key="${key}"]`);
+  if (item) { item.style.opacity = '0.4'; item.style.pointerEvents = 'none'; }
+  await drawerChangeQty(key, 0);
 }
 
 // ── Floating particles ──────────────────────
