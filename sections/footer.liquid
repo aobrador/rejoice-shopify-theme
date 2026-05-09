@@ -8,15 +8,13 @@
       {%- endif -%}
       <p class="footer-tagline">Praise &amp; Worship Apparel</p>
 
-      {%- comment -%} Payment icons — hardcoded Shopify CDN SVGs {%- endcomment -%}
-      <div class="footer-payment-row" style="gap:6px;margin-bottom:18px;display:flex;flex-wrap:wrap;align-items:center;">
-        {%- assign payment_types = 'visa,master,paypal,american_express,discover,shopify_pay' | split: ',' -%}
-        {%- for type in payment_types -%}
-          <img src="{{ type | payment_type_img_url }}"
-               alt="{{ type | replace: '_', ' ' | capitalize }}"
-               style="height:28px;width:auto;border-radius:4px;padding:2px 5px;filter:brightness(0) invert(1);">
-        {%- endfor -%}
-      </div>
+      {%- unless shop.enabled_payment_types == empty -%}
+        <div class="footer-payment-row">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
 
       <div class="footer-socials">
         {%- if section.settings.facebook_url != blank -%}
