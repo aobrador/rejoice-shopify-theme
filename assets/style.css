@@ -553,66 +553,71 @@ html { scroll-behavior: smooth; }
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* ── Search overlay ──────────────────────────────────────── */
+/* ── Search dropdown ─────────────────────────────────────── */
 .search-overlay {
-  position: fixed; inset: 0;
-  background: rgba(10, 0, 30, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  position: fixed;
+  top: 72px; left: 0; right: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(75,0,130,0.10);
   z-index: 9000;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.25s ease;
+  transform: translateY(-12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.search-overlay.open { opacity: 1; pointer-events: all; }
+.search-overlay.open { opacity: 1; transform: translateY(0); pointer-events: all; }
 .search-close {
-  position: absolute; top: 28px; right: 32px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff; border-radius: 50%;
-  width: 44px; height: 44px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background 0.2s;
+  position: absolute; top: 50%; right: 24px; transform: translateY(-50%);
+  background: none; border: none;
+  color: var(--text-muted); cursor: pointer;
+  padding: 6px; border-radius: 6px; transition: color 0.15s;
+  display: flex; align-items: center;
 }
-.search-close:hover { background: rgba(255,255,255,0.2); }
-.search-inner { width: 100%; max-width: 640px; padding: 0 24px; }
-.search-label {
-  color: rgba(255,255,255,0.5);
-  font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
-  font-weight: 700; margin-bottom: 20px;
-}
+.search-close:hover { color: var(--purple); }
+.search-inner { max-width: 720px; margin: 0 auto; padding: 20px 60px 20px 24px; }
+.search-label { display: none; }
 .search-form {
-  display: flex; gap: 0;
-  border-bottom: 2px solid rgba(255,255,255,0.3);
-  padding-bottom: 8px;
-  transition: border-color 0.2s;
+  display: flex; align-items: center; gap: 12px;
+  border: 1.5px solid var(--border); border-radius: 50px;
+  padding: 10px 18px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: var(--bg-soft);
 }
-.search-form:focus-within { border-color: var(--gold); }
+.search-form:focus-within {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(106,13,173,0.08);
+  background: var(--white);
+}
 .search-field {
   flex: 1; background: none; border: none; outline: none;
-  color: #fff; font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 300;
-  font-family: inherit;
+  color: var(--text); font-size: 0.95rem; font-family: inherit;
 }
-.search-field::placeholder { color: rgba(255,255,255,0.25); }
+.search-field::placeholder { color: var(--text-muted); }
 .search-submit {
-  background: none; border: none; color: rgba(255,255,255,0.6);
-  cursor: pointer; padding: 8px; transition: color 0.2s;
+  background: none; border: none; color: var(--purple);
+  cursor: pointer; padding: 0; display: flex; align-items: center;
+  transition: color 0.15s;
 }
-.search-submit:hover { color: var(--gold); }
+.search-submit:hover { color: var(--purple-dark); }
 .search-suggestions {
-  margin-top: 24px;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 12px; padding: 0 4px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .search-suggestions span {
-  color: rgba(255,255,255,0.4); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
 }
 .search-suggestions a {
-  color: rgba(255,255,255,0.75); font-size: 0.85rem; font-weight: 600;
-  text-decoration: none; padding: 5px 14px;
-  border: 1px solid rgba(255,255,255,0.2); border-radius: 50px;
-  transition: all 0.2s;
+  color: var(--purple); font-size: 0.82rem; font-weight: 600;
+  text-decoration: none; padding: 4px 12px;
+  border: 1px solid var(--border); border-radius: 50px;
+  background: var(--white);
+  transition: all 0.15s;
 }
-.search-suggestions a:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.4); }
+.search-suggestions a:hover {
+  background: var(--purple-pale); border-color: var(--purple);
+}
 
 /* ── Product card image improvements ────────────────────── */
 .product-image { position: relative; }
