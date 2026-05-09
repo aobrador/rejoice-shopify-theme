@@ -31,7 +31,12 @@
         {%- endif -%}
 
         <div class="product-img-overlay">
-          <span>View Product</span>
+          <button
+            class="quick-view-btn"
+            onclick="event.preventDefault();event.stopPropagation();openQuickView('{{ product.handle }}');"
+            aria-label="Quick view {{ product.title | escape }}">
+            Quick View
+          </button>
         </div>
       </div>
   </a>
@@ -78,7 +83,7 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-.product-img-overlay span {
+.quick-view-btn {
   color: #fff;
   font-size: 0.82rem;
   font-weight: 700;
@@ -88,6 +93,14 @@
   padding: 9px 22px;
   border-radius: 50px;
   backdrop-filter: blur(4px);
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, border-color 0.2s;
+}
+.quick-view-btn:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: #fff;
 }
 .product-card:hover .product-img-overlay { opacity: 1; }
 </style>

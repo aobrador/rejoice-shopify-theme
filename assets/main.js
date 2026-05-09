@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Close on Escape
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeCartDrawer();
+    if (e.key === 'Escape') { closeCartDrawer(); closeQuickView(); }
   });
 
   // ── Nav scroll shadow ─────────────────────────────────
@@ -304,6 +304,210 @@ function spawnParticles() {
       animation-duration:${dur}s;
     `;
     container.appendChild(p);
+  }
+}
+
+// ── Quick View ──────────────────────────────
+let qvProduct = null;       // full product JSON
+let qvSelected = {};        // { optionName: value }
+let qvActiveImg = 0;
+
+async function openQuickView(handle) {
+  const overlay = document.getElementById('qv-overlay');
+  const modal   = document.getElementById('qv-modal');
+  const inner   = document.getElementById('qv-inner');
+  if (!modal) return;
+
+  // Show modal with spinner
+  inner.innerHTML = '<div class="qv-loading"><div class="drawer-spinner"></div></div>';
+  overlay.classList.add('open');
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  // Force reflow then open
+  requestAnimationFrame(() => modal.classList.add('open'));
+  modal.setAttribute('aria-hidden', 'false');
+
+  try {
+    const res  = await fetch('/products/' + handle + '.js');
+    qvProduct  = await res.json();
+    qvSelected = {};
+    qvActiveImg = 0;
+    // Default each option to first value
+    (qvProduct.options || []).forEach((opt, i) => {
+      qvSelected[opt] = qvProduct.variants[0].options[i];
+    });
+    renderQuickView();
+  } catch(e) {
+    inner.innerHTML = '<p style="padding:40px;text-align:center;color:var(--text-muted);">Could not load product. <a href="/products/' + handle + '">View product page →</a></p>';
+  }
+}
+
+function closeQuickView() {
+  const overlay = document.getElementById('qv-overlay');
+  const modal   = document.getElementById('qv-modal');
+  if (!modal) return;
+  overlay.classList.remove('open');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  setTimeout(() => { modal.style.display = 'none'; }, 260);
+}
+
+function renderQuickView() {
+  const inner = document.getElementById('qv-inner');
+  const p = qvProduct;
+  if (!p || !inner) return;
+
+  // Find currently matched variant
+  const variant = findQVVariant();
+
+  // Images
+  const imgs = p.images || [];
+  const mainImg = imgs[qvActiveImg] || imgs[0] || '';
+
+  const thumbsHtml = imgs.slice(0, 6).map((img, i) => `
+    <div class="qv-thumb${i === qvActiveImg ? ' active' : ''}" onclick="qvSetImage(${i})">
+      <img src="${img.replace(/(\.[^.?]+)(\?|$)/, '_120x160_crop_top$1$2')}" alt="" loading="lazy">
+    </div>
+  `).join('');
+
+  // Variants
+  const optionsHtml = (p.options || []).length > 1 || (p.options[0] && p.options[0] !== 'Title')
+    ? (p.options || []).map((optName, oi) => {
+        const values = [...new Set(p.variants.map(v => v.options[oi]))];
+        const btns = values.map(val => `
+          <button class="qv-opt-btn${qvSelected[optName] === val ? ' selected' : ''}"
+            onclick="qvSelectOption('${optName.replace(/'/g,"\\'")}','${val.replace(/'/g,"\\'")}')">
+            ${val}
+          </button>
+        `).join('');
+        return `
+          <div class="qv-variants">
+            <div class="qv-variant-label">${optName}: <strong>${qvSelected[optName] || ''}</strong></div>
+            <div class="qv-option-btns">${btns}</div>
+          </div>
+        `;
+      }).join('')
+    : '';
+
+  const isAvail  = variant ? variant.available : false;
+  const price    = variant ? variant.price : p.price;
+  const compare  = variant ? variant.compare_at_price : p.compare_at_price;
+  const variantId = variant ? variant.id : (p.variants[0] ? p.variants[0].id : '');
+
+  const mainImgSrc = mainImg
+    ? mainImg.replace(/(\.[^.?]+)(\?|$)/, '_600x800_crop_top$1$2')
+    : '';
+
+  const desc = p.body_html
+    ? p.body_html.replace(/<[^>]+>/g,'').trim().slice(0,280)
+    : '';
+
+  inner.innerHTML = `
+    <div class="qv-grid">
+      <div class="qv-images">
+        <div class="qv-main-img-wrap" id="qv-main-wrap">
+          ${mainImgSrc ? `<img id="qv-main-img" src="${mainImgSrc}" alt="${p.title}">` : ''}
+        </div>
+        ${imgs.length > 1 ? `<div class="qv-thumbs">${thumbsHtml}</div>` : ''}
+      </div>
+
+      <div class="qv-info">
+        <div class="qv-type">${p.type || ''}</div>
+        <h2 class="qv-title">${p.title}</h2>
+        <div class="qv-price">
+          ${moneyFormat(price)}
+          ${compare && compare > price ? `<span class="qv-compare">${moneyFormat(compare)}</span>` : ''}
+        </div>
+
+        ${desc ? `<div class="qv-desc">${desc}</div>` : ''}
+
+        ${optionsHtml}
+
+        <div class="qv-actions">
+          <button class="qv-atc-btn" id="qv-atc-btn"
+            onclick="qvAddToCart('${variantId}')"
+            ${!isAvail ? 'disabled' : ''}>
+            ${isAvail ? 'Add to Cart' : 'Sold Out'}
+          </button>
+          <a class="qv-view-link" href="/products/${p.handle}">View full product page →</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function qvSetImage(index) {
+  qvActiveImg = index;
+  const p = qvProduct;
+  if (!p) return;
+  const imgs = p.images || [];
+  const src = imgs[index]
+    ? imgs[index].replace(/(\.[^.?]+)(\?|$)/, '_600x800_crop_top$1$2')
+    : '';
+  const mainImg = document.getElementById('qv-main-img');
+  if (mainImg && src) { mainImg.style.opacity = '0'; setTimeout(() => { mainImg.src = src; mainImg.style.opacity = '1'; }, 150); }
+  document.querySelectorAll('.qv-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
+}
+
+function qvSelectOption(optName, val) {
+  qvSelected[optName] = val;
+  // Update variant image if this option matches a variant with an image
+  const variant = findQVVariant();
+  if (variant && variant.featured_image) {
+    const imgUrl = variant.featured_image.src;
+    const idx = (qvProduct.images || []).findIndex(img => img === imgUrl || img.split('?')[0] === imgUrl.split('?')[0]);
+    if (idx !== -1) qvSetImage(idx);
+  }
+  // Re-render just the options + button without full DOM wipe (for smoothness)
+  const p = qvProduct;
+  const v = findQVVariant();
+  const isAvail = v ? v.available : false;
+  const price   = v ? v.price : p.price;
+  const compare = v ? v.compare_at_price : p.compare_at_price;
+  const varId   = v ? v.id : '';
+
+  // Update option buttons
+  (p.options || []).forEach((oName, oi) => {
+    const values = [...new Set(p.variants.map(vr => vr.options[oi]))];
+    document.querySelectorAll(`.qv-opt-btn`).forEach(btn => {
+      if (values.includes(btn.textContent.trim())) {
+        btn.classList.toggle('selected', btn.textContent.trim() === qvSelected[oName] && oName === optName);
+      }
+    });
+  });
+  // Simpler: just re-render
+  renderQuickView();
+}
+
+function findQVVariant() {
+  if (!qvProduct) return null;
+  const opts = qvProduct.options || [];
+  return qvProduct.variants.find(v =>
+    opts.every((optName, i) => !qvSelected[optName] || v.options[i] === qvSelected[optName])
+  ) || qvProduct.variants[0];
+}
+
+async function qvAddToCart(variantId) {
+  if (!variantId) return;
+  const btn = document.getElementById('qv-atc-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Adding…'; }
+  try {
+    const res = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ id: variantId, quantity: 1 })
+    });
+    if (res.ok) {
+      closeQuickView();
+      openCartDrawer();
+    } else {
+      showToast('⚠️ Could not add item — please try again.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Add to Cart'; }
+    }
+  } catch(e) {
+    showToast('⚠️ Something went wrong.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Add to Cart'; }
   }
 }
 
