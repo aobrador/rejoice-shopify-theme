@@ -18,14 +18,13 @@
   <!-- Sidebar filters -->
   <aside class="shop-sidebar">
 
-    <!-- Mini search -->
-    <form action="/search" method="get" class="sidebar-search-form">
-      <input type="hidden" name="type" value="product">
+    <!-- Mini search (client-side filter) -->
+    <div class="sidebar-search-form">
       <div class="sidebar-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" name="q" placeholder="Search products…" class="sidebar-search-input" />
+        <input type="text" id="sidebar-search-input" placeholder="Search products…" class="sidebar-search-input" autocomplete="off" />
       </div>
-    </form>
+    </div>
 
     <div class="sidebar-section">
       <h3 class="sidebar-heading">Collections</h3>
@@ -61,32 +60,48 @@
       </ul>
     </div>
 
-    <div class="sidebar-section">
-      <h3 class="sidebar-heading">Sort By</h3>
-      <ul class="sidebar-list">
-        <li><a class="sidebar-link {% if collection.sort_by == 'manual' or collection.sort_by == blank %}active{% endif %}" href="{{ collection.url }}?sort_by=manual">Featured</a></li>
-        <li><a class="sidebar-link {% if collection.sort_by == 'best-selling' %}active{% endif %}" href="{{ collection.url }}?sort_by=best-selling">Best Selling</a></li>
-        <li><a class="sidebar-link {% if collection.sort_by == 'price-ascending' %}active{% endif %}" href="{{ collection.url }}?sort_by=price-ascending">Price: Low to High</a></li>
-        <li><a class="sidebar-link {% if collection.sort_by == 'price-descending' %}active{% endif %}" href="{{ collection.url }}?sort_by=price-descending">Price: High to Low</a></li>
-        <li><a class="sidebar-link {% if collection.sort_by == 'created-descending' %}active{% endif %}" href="{{ collection.url }}?sort_by=created-descending">Newest</a></li>
-        <li><a class="sidebar-link {% if collection.sort_by == 'title-ascending' %}active{% endif %}" href="{{ collection.url }}?sort_by=title-ascending">A – Z</a></li>
-      </ul>
-    </div>
   </aside>
 
   <!-- Main product area -->
   <div class="shop-main">
 
-    <!-- Top bar: count + mobile filter toggle -->
+    <!-- Top bar: count + sort dropdown + mobile filter toggle -->
     <div class="shop-topbar">
-      <p class="product-count">
-        <strong>{{ collection.products_count }}</strong> product{% if collection.products_count != 1 %}s{% endif %}
+      <p class="product-count" id="product-count-text">
+        <strong id="product-count-num">{{ collection.products_count }}</strong> product{% if collection.products_count != 1 %}s{% endif %}
         {%- if collection.handle != 'all' %} in <em>{{ collection.title }}</em>{%- endif -%}
       </p>
-      <button class="mobile-filter-toggle" id="mobile-filter-toggle">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-        Filter &amp; Sort
-      </button>
+      <div class="topbar-right">
+        <!-- Sort dropdown -->
+        <div class="sort-dropdown-wrap" id="sort-dropdown-wrap">
+          <button class="sort-btn" id="sort-btn" aria-expanded="false" aria-haspopup="listbox">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+            <span id="sort-label">
+              {%- if collection.sort_by == 'best-selling' -%}Best Selling
+              {%- elsif collection.sort_by == 'price-ascending' -%}Price: Low → High
+              {%- elsif collection.sort_by == 'price-descending' -%}Price: High → Low
+              {%- elsif collection.sort_by == 'created-descending' -%}Newest
+              {%- elsif collection.sort_by == 'title-ascending' -%}A – Z
+              {%- else -%}Sort
+              {%- endif -%}
+            </span>
+            <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="sort-menu" id="sort-menu" role="listbox">
+            <li><a class="sort-option {% if collection.sort_by == 'manual' or collection.sort_by == blank %}active{% endif %}" href="{{ collection.url }}?sort_by=manual">Featured</a></li>
+            <li><a class="sort-option {% if collection.sort_by == 'best-selling' %}active{% endif %}" href="{{ collection.url }}?sort_by=best-selling">Best Selling</a></li>
+            <li><a class="sort-option {% if collection.sort_by == 'price-ascending' %}active{% endif %}" href="{{ collection.url }}?sort_by=price-ascending">Price: Low → High</a></li>
+            <li><a class="sort-option {% if collection.sort_by == 'price-descending' %}active{% endif %}" href="{{ collection.url }}?sort_by=price-descending">Price: High → Low</a></li>
+            <li><a class="sort-option {% if collection.sort_by == 'created-descending' %}active{% endif %}" href="{{ collection.url }}?sort_by=created-descending">Newest</a></li>
+            <li><a class="sort-option {% if collection.sort_by == 'title-ascending' %}active{% endif %}" href="{{ collection.url }}?sort_by=title-ascending">A – Z</a></li>
+          </ul>
+        </div>
+        <!-- Mobile filter toggle -->
+        <button class="mobile-filter-toggle" id="mobile-filter-toggle">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          Filters
+        </button>
+      </div>
     </div>
 
     <!-- Products grid -->
@@ -251,16 +266,86 @@
 .product-count strong { color: var(--purple-dark); }
 .product-count em { color: var(--purple); font-style: normal; font-weight: 600; }
 
-.mobile-filter-toggle {
-  display: none;
+.topbar-right {
+  display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+/* Sort dropdown */
+.sort-dropdown-wrap {
+  position: relative;
+}
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   background: var(--white);
   border: 1px solid var(--border);
   color: var(--text-mid);
-  padding: 9px 18px;
+  padding: 8px 14px;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.sort-btn:hover, .sort-dropdown-wrap.open .sort-btn {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+.sort-chevron {
+  transition: transform 0.2s;
+}
+.sort-dropdown-wrap.open .sort-chevron {
+  transform: rotate(180deg);
+}
+.sort-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  list-style: none;
+  padding: 6px;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.sort-dropdown-wrap.open .sort-menu {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+.sort-option {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 7px;
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.sort-option:hover { background: var(--purple-pale); color: var(--purple); }
+.sort-option.active { background: var(--purple-pale); color: var(--purple); font-weight: 700; }
+
+.mobile-filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
@@ -314,6 +399,19 @@
   z-index: 199;
 }
 
+/* Search empty state */
+.search-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  display: none;
+}
+.search-empty-state h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--purple-dark);
+  margin-bottom: 8px;
+}
+.search-empty-state p { color: var(--text-muted); font-size: 0.9rem; }
+
 /* Responsive */
 @media (max-width: 900px) {
   .shop-layout { grid-template-columns: 1fr; }
@@ -334,27 +432,78 @@
   .mobile-filter-toggle { display: flex; }
   .shop-main { padding: 24px 20px; }
   .collection-hero { padding: 40px 20px 32px; }
+  .sort-menu { right: 0; left: auto; }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var toggle = document.getElementById('mobile-filter-toggle');
+
+  // ── Mobile sidebar ────────────────────────────
+  var toggle  = document.getElementById('mobile-filter-toggle');
   var sidebar = document.querySelector('.shop-sidebar');
   var overlay = document.getElementById('sidebar-overlay');
-  if (!toggle || !sidebar || !overlay) return;
+  if (toggle && sidebar && overlay) {
+    function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+    toggle.addEventListener('click', openSidebar);
+    overlay.addEventListener('click', closeSidebar);
+  }
 
-  function openSidebar() {
-    sidebar.classList.add('open');
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
+  // ── Sort dropdown ─────────────────────────────
+  var sortWrap = document.getElementById('sort-dropdown-wrap');
+  var sortBtn  = document.getElementById('sort-btn');
+  if (sortWrap && sortBtn) {
+    sortBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sortWrap.classList.toggle('open');
+      sortBtn.setAttribute('aria-expanded', sortWrap.classList.contains('open'));
+    });
+    document.addEventListener('click', function() {
+      sortWrap.classList.remove('open');
+      sortBtn.setAttribute('aria-expanded', 'false');
+    });
   }
-  function closeSidebar() {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
+
+  // ── Client-side product search ────────────────
+  var searchInput  = document.getElementById('sidebar-search-input');
+  var cards        = document.querySelectorAll('.product-card');
+  var countNum     = document.getElementById('product-count-num');
+  var grid         = document.querySelector('.products-grid');
+  var emptyMsg     = null; // will create lazily
+
+  if (searchInput && cards.length > 0) {
+    searchInput.addEventListener('input', function() {
+      var query = this.value.trim().toLowerCase();
+      var visible = 0;
+
+      cards.forEach(function(card) {
+        var title = (card.querySelector('.product-name') || card).textContent.toLowerCase();
+        var match = !query || title.indexOf(query) !== -1;
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+
+      // Update count badge
+      if (countNum) countNum.textContent = visible;
+
+      // Show/hide empty state
+      if (!emptyMsg && grid) {
+        emptyMsg = document.createElement('div');
+        emptyMsg.className = 'search-empty-state';
+        emptyMsg.innerHTML = '<div style="font-size:2.5rem;margin-bottom:14px;color:var(--purple-light);">◆</div><h3>No products match</h3><p>Try a different search term.</p>';
+        grid.insertAdjacentElement('afterend', emptyMsg);
+      }
+      if (emptyMsg) emptyMsg.style.display = visible === 0 ? 'block' : 'none';
+    });
+
+    // Clear search on Escape
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        this.value = '';
+        this.dispatchEvent(new Event('input'));
+      }
+    });
   }
-  toggle.addEventListener('click', openSidebar);
-  overlay.addEventListener('click', closeSidebar);
 });
 </script>
