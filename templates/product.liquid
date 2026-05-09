@@ -19,7 +19,7 @@
                  alt="{{ product.images[0].alt | escape }}"
                  data-zoom="{{ product.images[0].src }}" />
           {%- else -%}
-            <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:6rem;">🩱</div>
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;color:var(--purple-light);opacity:0.3;">◆</div>
           {%- endif -%}
         </div>
 
@@ -35,7 +35,7 @@
         {%- endif -%}
 
         <!-- Zoom hint -->
-        <div class="zoom-hint">🔍 Hover to zoom · Click to expand</div>
+        <div class="zoom-hint">Hover to zoom &middot; Click to expand</div>
       </div>
 
       <!-- Thumbnail strip -->
@@ -58,6 +58,11 @@
     <div class="product-info">
       <div class="product-category">{{ product.vendor }}</div>
       <h1 class="product-info-title">{{ product.title }}</h1>
+
+      <!-- Star rating (Judge.me) -->
+      <div class="product-star-row">
+        <div class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}'></div>
+      </div>
 
       <!-- Price -->
       <div class="product-info-price" id="product-price">
@@ -141,11 +146,11 @@
         </div>
 
         <!-- Availability -->
-        <div id="variant-availability" style="margin-top:10px;font-size:0.82rem;color:var(--text-muted);">
+        <div id="variant-availability" class="variant-avail">
           {%- if product.available -%}
-            ✅ In stock — ready to make
+            <span class="avail-dot avail-in"></span> In stock — ready to make
           {%- else -%}
-            ❌ Currently unavailable
+            <span class="avail-dot avail-out"></span> Currently unavailable
           {%- endif -%}
         </div>
 
@@ -153,27 +158,37 @@
 
       <!-- Trust badges -->
       <div class="trust-badges">
-        <span>✂️ Handcrafted in Hialeah, FL</span>
-        <span>🚚 Priority Mail 2–3 Days</span>
-        <span>🌈 XS – 4X Available</span>
-        <span>🔒 Secure Checkout</span>
+        <span class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"/></svg>
+          Handcrafted in Hialeah, FL
+        </span>
+        <span class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Priority Mail 2–3 Days
+        </span>
+        <span class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          XS – 4X Available
+        </span>
+        <span class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure Checkout
+        </span>
       </div>
 
-      <!-- Description -->
-      {%- if product.description != blank -%}
-        <div class="product-description">
-          {{ product.description }}
-        </div>
-      {%- endif -%}
-
       <!-- Share -->
-      <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+      <div class="product-share">
+        <span class="share-label">Share:</span>
         <a href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ product.url }}"
-           target="_blank" rel="noopener"
-           style="font-size:0.82rem;color:var(--purple);text-decoration:none;margin-right:16px;">📘 Share</a>
+           target="_blank" rel="noopener" class="share-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          Facebook
+        </a>
         <a href="https://pinterest.com/pin/create/button/?url={{ shop.url }}{{ product.url }}&media={{ product.featured_image | img_url: '600x600' }}&description={{ product.title | url_encode }}"
-           target="_blank" rel="noopener"
-           style="font-size:0.82rem;color:var(--purple);text-decoration:none;">📌 Pin it</a>
+           target="_blank" rel="noopener" class="share-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          Pinterest
+        </a>
       </div>
     </div>
 
@@ -251,7 +266,7 @@
     <div class="product-tab-panel" id="tab-sizechart">
       <p style="margin-bottom:20px;font-size:0.9rem;color:var(--text-muted);">All measurements in inches. When between sizes, size up for freedom of movement.</p>
 
-      <p style="font-family:'Cinzel',serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">👗 Adult Woman</p>
+      <p style="font-family:Arial,Helvetica,sans-serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">Adult Woman</p>
       <div class="table-wrapper" style="margin-bottom:28px;">
         <table><thead><tr><th></th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>1X</th><th>2X</th><th>3X</th><th>4X</th></tr></thead>
         <tbody>
@@ -261,7 +276,7 @@
         </tbody></table>
       </div>
 
-      <p style="font-family:'Cinzel',serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">👧 Kids &amp; Teen</p>
+      <p style="font-family:Arial,Helvetica,sans-serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">Kids &amp; Teen</p>
       <div class="table-wrapper" style="margin-bottom:28px;">
         <table><thead><tr><th></th><th>XS 3/4</th><th>S 5/6</th><th>M 7/8</th><th>L 10/12</th><th>XL 14/16</th></tr></thead>
         <tbody>
@@ -271,7 +286,7 @@
         </tbody></table>
       </div>
 
-      <p style="font-family:'Cinzel',serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">👔 Adult Men</p>
+      <p style="font-family:Arial,Helvetica,sans-serif;font-weight:700;color:var(--purple-dark);margin-bottom:10px;">Adult Men</p>
       <div class="table-wrapper">
         <table><thead><tr><th></th><th>S</th><th>M</th><th>L</th><th>XL</th><th>1X</th><th>2X</th><th>3X</th><th>4X</th></tr></thead>
         <tbody>
@@ -619,7 +634,7 @@
 
 /* ── Product info ── */
 .product-info-title {
-  font-family: 'Cinzel', serif;
+  font-family: Arial, Helvetica, sans-serif;
   color: var(--purple-dark);
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   line-height: 1.25;
@@ -731,18 +746,86 @@
   margin-top: 8px;
 }
 
+/* Star rating row */
+.product-star-row {
+  margin: 6px 0 14px;
+  min-height: 22px;
+}
+
+/* Availability */
+.variant-avail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.avail-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.avail-in  { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+.avail-out { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+
 /* Trust badges */
 .trust-badges {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
   margin-top: 20px;
-  padding: 16px;
+  padding: 14px 16px;
   background: var(--bg-soft);
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
-.trust-badges span { font-size: 0.78rem; color: var(--text-muted); }
+.trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.trust-item svg { color: var(--purple); flex-shrink: 0; }
+.trust-item:not(:last-child)::after {
+  content: '·';
+  margin-left: 6px;
+  color: var(--border);
+}
+
+/* Share row */
+.product-share {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.share-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.share-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-pale); }
 
 /* Description */
 .product-description {
@@ -779,7 +862,7 @@
   border-bottom: 3px solid transparent;
   margin-bottom: -2px;
   padding: 16px 28px;
-  font-family: 'Cinzel', serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.07em;
