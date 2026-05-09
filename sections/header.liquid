@@ -1,0 +1,40 @@
+<nav id="nav">
+  <a class="nav-logo" href="{{ routes.root_url }}">
+    {%- if section.settings.logo != blank -%}
+      <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}" height="42">
+    {%- else -%}
+      <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" height="42">
+    {%- endif -%}
+  </a>
+
+  <ul class="nav-links" id="nav-links">
+    <li><a href="{{ routes.root_url }}" {% if template == 'index' %}class="active"{% endif %}>Home</a></li>
+    <li><a href="{{ pages['about'].url }}" {% if page.handle == 'about' %}class="active"{% endif %}>About</a></li>
+    <li><a href="{{ routes.collections_url }}" {% if template contains 'collection' %}class="active"{% endif %}>Shop</a></li>
+    <li><a href="{{ pages['size-chart'].url }}" {% if page.handle == 'size-chart' %}class="active"{% endif %}>Size Chart</a></li>
+    <li><a href="{{ pages['contact'].url }}" {% if page.handle == 'contact' %}class="active"{% endif %}>Contact</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a class="nav-cart" href="{{ routes.cart_url }}">
+      🛒<span class="cart-badge" id="cart-badge">{{ cart.item_count }}</span>
+    </a>
+    <a class="btn-nav" href="{{ routes.collections_url }}">Shop Now</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    }
+  ]
+}
+{% endschema %}

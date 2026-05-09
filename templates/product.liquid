@@ -1,0 +1,148 @@
+<div class="page-hero" style="padding:50px 48px 40px;">
+  {% render 'breadcrumb', breadcrumb_title: product.title %}
+</div>
+
+<div class="section" style="padding-top:40px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
+
+    {%- comment -%} Left — Gallery {%- endcomment -%}
+    <div>
+      <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:var(--purple-pale);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;" id="product-main-img-wrap">
+        {%- if product.featured_image -%}
+          <img id="product-main-img"
+               src="{{ product.featured_image | img_url: '700x700', crop: 'center' }}"
+               alt="{{ product.featured_image.alt | escape }}"
+               style="width:100%;height:100%;object-fit:cover;" />
+        {%- else -%}
+          <span style="font-size:6rem;">🩱</span>
+        {%- endif -%}
+      </div>
+
+      {%- if product.images.size > 1 -%}
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          {%- for image in product.images limit: 6 -%}
+            <img src="{{ image | img_url: '120x120', crop: 'center' }}"
+                 alt="{{ image.alt | escape }}"
+                 onclick="document.getElementById('product-main-img').src='{{ image | img_url: '700x700', crop: 'center' }}'"
+                 style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:2px solid var(--border);cursor:pointer;transition:border-color 0.2s;"
+                 onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--border)'" />
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right — Details {%- endcomment -%}
+    <div>
+      {%- if product.vendor != blank -%}
+        <div class="product-category">{{ product.vendor }}</div>
+      {%- endif -%}
+      <h1 style="font-family:'Cinzel',serif;color:var(--purple-dark);font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.25;margin-bottom:16px;">{{ product.title }}</h1>
+
+      {%- form 'product', product, id: 'product-form' -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" id="variant-id">
+
+        {%- comment -%} Price {%- endcomment -%}
+        <div style="margin-bottom:24px;">
+          {%- if product.compare_at_price > product.price -%}
+            <span style="font-size:1.6rem;font-weight:700;color:var(--purple-dark);">{{ product.price | money }}</span>
+            <span style="font-size:1rem;color:var(--text-muted);text-decoration:line-through;margin-left:10px;">{{ product.compare_at_price | money }}</span>
+            <span class="product-badge badge-sale" style="position:static;display:inline-block;margin-left:10px;">Sale</span>
+          {%- else -%}
+            <span style="font-size:1.6rem;font-weight:700;color:var(--purple-dark);">{{ product.price | money }}</span>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Variant selectors {%- endcomment -%}
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <div style="margin-bottom:20px;">
+              <label style="display:block;font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">
+                {{ option.name }}
+              </label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                {%- for value in option.values -%}
+                  <label style="cursor:pointer;">
+                    <input type="radio" name="options[{{ option.name | handleize }}]" value="{{ value | escape }}"
+                           {% if forloop.first %}checked{% endif %}
+                           style="display:none;" class="variant-option"
+                           onchange="updateVariant()">
+                    <span class="filter-btn" style="margin:0;" data-option="{{ option.position }}" data-value="{{ value | escape }}">{{ value }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        {%- comment -%} Quantity {%- endcomment -%}
+        <div style="margin-bottom:24px;">
+          <label style="display:block;font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-dark);margin-bottom:8px;">Quantity</label>
+          <div style="display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">
+            <button type="button" onclick="changeQty(-1)" style="width:40px;height:40px;background:var(--bg-soft);border:none;font-size:1.2rem;cursor:pointer;color:var(--purple-dark);">−</button>
+            <input type="number" name="quantity" value="1" min="1" id="qty-input"
+                   style="width:52px;text-align:center;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);height:40px;font-size:1rem;color:var(--text);background:var(--white);outline:none;" />
+            <button type="button" onclick="changeQty(1)" style="width:40px;height:40px;background:var(--bg-soft);border:none;font-size:1.2rem;cursor:pointer;color:var(--purple-dark);">+</button>
+          </div>
+        </div>
+
+        {%- if product.available -%}
+          <button type="submit" class="btn-add" style="font-size:1rem;padding:16px;border-radius:50px;letter-spacing:0.1em;">
+            Add to Cart — {{ product.price | money }}
+          </button>
+        {%- else -%}
+          <button type="button" class="btn-add" disabled style="opacity:0.5;cursor:not-allowed;font-size:1rem;padding:16px;border-radius:50px;">
+            Sold Out
+          </button>
+        {%- endif -%}
+      {%- endform -%}
+
+      {%- comment -%} Description {%- endcomment -%}
+      {%- if product.description != blank -%}
+        <div style="margin-top:36px;border-top:1px solid var(--border);padding-top:28px;color:var(--text-mid);line-height:1.85;">
+          {{ product.description }}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Trust badges {%- endcomment -%}
+      <div style="margin-top:28px;display:flex;gap:20px;flex-wrap:wrap;">
+        <span style="font-size:0.8rem;color:var(--text-muted);">✂️ Handcrafted in Hialeah, FL</span>
+        <span style="font-size:0.8rem;color:var(--text-muted);">🚚 Priority Mail 2–3 Days</span>
+        <span style="font-size:0.8rem;color:var(--text-muted);">🌈 XS – 4X Available</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function changeQty(delta) {
+  const input = document.getElementById('qty-input');
+  const newVal = Math.max(1, parseInt(input.value || 1) + delta);
+  input.value = newVal;
+}
+
+function updateVariant() {
+  // Highlight selected radio labels
+  document.querySelectorAll('.variant-option').forEach(radio => {
+    const label = radio.nextElementSibling;
+    if (radio.checked) {
+      label.style.borderColor = 'var(--purple)';
+      label.style.color = 'var(--purple)';
+      label.style.background = 'var(--purple-pale)';
+    } else {
+      label.style.borderColor = '';
+      label.style.color = '';
+      label.style.background = '';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', updateVariant);
+</script>
+
+<style>
+@media (max-width: 768px) {
+  .section > div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

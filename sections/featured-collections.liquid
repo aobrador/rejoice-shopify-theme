@@ -1,0 +1,54 @@
+<div class="section" style="padding-top:0;">
+  <div class="section-title fade-in">
+    <span class="eyebrow">Browse by Category</span>
+    <h2>Our Collections</h2>
+    <div class="divider-purple"></div>
+    <p>Beautifully designed praise &amp; worship garments for every ministry need</p>
+  </div>
+  <div class="categories-grid">
+    {%- for collection in collections limit: 4 -%}
+      <a class="category-card fade-in" href="{{ collection.url }}">
+        <div class="category-bg">
+          {%- if collection.image -%}
+            <img src="{{ collection.image | img_url: '600x600', crop: 'center' }}"
+                 alt="{{ collection.image.alt | escape }}"
+                 style="width:100%;height:100%;object-fit:cover;" />
+          {%- else -%}
+            <span style="font-size:5rem;">
+              {%- case forloop.index -%}
+                {%- when 1 -%}🩱
+                {%- when 2 -%}👗
+                {%- when 3 -%}🧣
+                {%- else -%}👑
+              {%- endcase -%}
+            </span>
+          {%- endif -%}
+        </div>
+        <div class="category-overlay">
+          <h3>{{ collection.title }}</h3>
+          <p>{{ collection.description | strip_html | truncatewords: 10 }}</p>
+        </div>
+      </a>
+    {%- else -%}
+      {%- assign fallback_cats = 'Leotards,Skirts,Prayer Shawls,Accessories' | split: ',' -%}
+      {%- assign fallback_icons = '🩱,👗,🧣,👑' | split: ',' -%}
+      {%- assign fallback_descs = 'Angel Wing · Bell Sleeve · Princess Sleeve · from $40,Denier Liturgical · Crepe Satin · from $64,The Covenant Collection · from $46,Head Pieces · Head Buns · from $15' | split: ',' -%}
+      {%- for i in (0..3) -%}
+        <a class="category-card fade-in" href="{{ routes.collections_url }}">
+          <div class="category-bg">{{ fallback_icons[i] }}</div>
+          <div class="category-overlay">
+            <h3>{{ fallback_cats[i] }}</h3>
+            <p>{{ fallback_descs[i] }}</p>
+          </div>
+        </a>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "presets": [{ "name": "Featured Collections" }]
+}
+{% endschema %}

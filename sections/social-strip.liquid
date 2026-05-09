@@ -1,0 +1,36 @@
+<div class="features-strip">
+  <div class="section-title fade-in" style="margin-bottom:28px;">
+    <span class="eyebrow">Follow Our Ministry</span>
+  </div>
+  <div class="social-strip">
+    {%- if section.settings.facebook_url != blank -%}
+      <a class="social-btn" href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener">📘 Facebook</a>
+    {%- endif -%}
+    {%- if section.settings.instagram_url != blank -%}
+      <a class="social-btn" href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">📸 Instagram</a>
+    {%- endif -%}
+    {%- if section.settings.twitter_url != blank -%}
+      <a class="social-btn" href="{{ section.settings.twitter_url }}" target="_blank" rel="noopener">🐦 Twitter</a>
+    {%- endif -%}
+    {%- if section.settings.pinterest_url != blank -%}
+      <a class="social-btn" href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener">📌 Pinterest</a>
+    {%- endif -%}
+    {%- if section.settings.youtube_url != blank -%}
+      <a class="social-btn" href="{{ section.settings.youtube_url }}" target="_blank" rel="noopener">▶️ YouTube</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Social Strip",
+  "settings": [
+    { "type": "url", "id": "facebook_url", "label": "Facebook URL" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
+    { "type": "url", "id": "twitter_url", "label": "Twitter / X URL" },
+    { "type": "url", "id": "pinterest_url", "label": "Pinterest URL" },
+    { "type": "url", "id": "youtube_url", "label": "YouTube URL" }
+  ],
+  "presets": [{ "name": "Social Strip" }]
+}
+{% endschema %}

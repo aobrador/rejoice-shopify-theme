@@ -1,0 +1,98 @@
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: 'Cart' %}
+  <h1>Your Cart</h1>
+</div>
+
+<div class="section">
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:50px;align-items:start;">
+
+        {%- comment -%} Line items {%- endcomment -%}
+        <div>
+          {%- for item in cart.items -%}
+            <div style="display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);align-items:center;">
+              <a href="{{ item.url }}">
+                <img src="{{ item.image | img_url: '120x120', crop: 'center' }}"
+                     alt="{{ item.image.alt | escape }}"
+                     style="width:90px;height:90px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);" />
+              </a>
+              <div style="flex:1;">
+                <a href="{{ item.url }}" style="font-weight:700;color:var(--text);text-decoration:none;font-size:1rem;">{{ item.product.title }}</a>
+                {%- unless item.variant.title == 'Default Title' -%}
+                  <div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;">{{ item.variant.title }}</div>
+                {%- endunless -%}
+                <div style="font-size:0.9rem;color:var(--purple-dark);font-weight:700;margin-top:8px;">{{ item.price | money }}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+                  <button type="button" style="width:36px;height:36px;background:var(--bg-soft);border:none;font-size:1.1rem;cursor:pointer;color:var(--purple-dark);"
+                          onclick="setQty(this, -1)">−</button>
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0"
+                         style="width:44px;text-align:center;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);height:36px;font-size:0.95rem;background:var(--white);outline:none;" />
+                  <button type="button" style="width:36px;height:36px;background:var(--bg-soft);border:none;font-size:1.1rem;cursor:pointer;color:var(--purple-dark);"
+                          onclick="setQty(this, 1)">+</button>
+                </div>
+                <span style="font-weight:700;color:var(--text);min-width:64px;text-align:right;">{{ item.line_price | money }}</span>
+              </div>
+            </div>
+          {%- endfor -%}
+
+          <div style="margin-top:20px;display:flex;gap:12px;">
+            <button type="submit" name="update" class="btn-secondary" style="padding:12px 28px;font-size:0.82rem;">Update Cart</button>
+          </div>
+        </div>
+
+        {%- comment -%} Order summary {%- endcomment -%}
+        <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;position:sticky;top:100px;">
+          <h3 style="font-family:'Cinzel',serif;color:var(--purple-dark);margin-bottom:24px;">Order Summary</h3>
+
+          {%- for item in cart.items -%}
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.88rem;color:var(--text-mid);">
+              <span>{{ item.product.title | truncatewords: 5 }} × {{ item.quantity }}</span>
+              <span>{{ item.line_price | money }}</span>
+            </div>
+          {%- endfor -%}
+
+          <div style="border-top:1px solid var(--border);margin:20px 0;padding-top:20px;">
+            <div style="display:flex;justify-content:space-between;font-size:1.05rem;font-weight:700;color:var(--text);">
+              <span>Subtotal</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Shipping calculated at checkout</p>
+          </div>
+
+          <button type="submit" name="checkout" class="btn-primary" style="width:100%;text-align:center;padding:16px;font-size:0.95rem;">
+            Proceed to Checkout
+          </button>
+
+          <a href="{{ routes.collections_url }}" style="display:block;text-align:center;margin-top:14px;font-size:0.82rem;color:var(--purple);text-decoration:none;">← Continue Shopping</a>
+        </div>
+
+      </div>
+    </form>
+
+  {%- else -%}
+    <div style="text-align:center;padding:80px 20px;">
+      <div style="font-size:4rem;margin-bottom:20px;">🛒</div>
+      <h2 style="font-family:'Cinzel',serif;color:var(--purple-dark);margin-bottom:16px;">Your cart is empty</h2>
+      <p style="color:var(--text-muted);margin-bottom:32px;">Looks like you haven't added anything yet — let's change that!</p>
+      <a class="btn-primary" href="{{ routes.collections_url }}">Explore Our Collection</a>
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+function setQty(btn, delta) {
+  const input = btn.closest('div').querySelector('input[type=number]');
+  input.value = Math.max(0, parseInt(input.value || 1) + delta);
+}
+</script>
+
+<style>
+@media (max-width: 768px) {
+  .section > form > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

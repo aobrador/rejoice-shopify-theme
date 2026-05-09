@@ -1,0 +1,19 @@
+<div style="padding: 70px 48px;">
+  <div class="promo-banner fade-in">
+    <h3>🌸 {{ section.settings.title }}</h3>
+    <div class="promo-code" id="promo-code-btn" title="Click to copy">{{ section.settings.code }}</div>
+    <p>{{ section.settings.description }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Promo Banner",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Spring Sale — Save 10% Sitewide" },
+    { "type": "text", "id": "code", "label": "Promo code", "default": "REJOICE" },
+    { "type": "text", "id": "description", "label": "Description", "default": "Use this code at checkout · Click the code to copy it to your clipboard" }
+  ],
+  "presets": [{ "name": "Promo Banner" }]
+}
+{% endschema %}

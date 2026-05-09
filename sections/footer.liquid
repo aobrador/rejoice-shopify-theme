@@ -1,0 +1,71 @@
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      {%- if section.settings.logo != blank -%}
+        <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}">
+      {%- else -%}
+        <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}">
+      {%- endif -%}
+      <p class="footer-tagline">Praise &amp; Worship Apparel</p>
+      <div class="footer-payment-row">
+        <span class="payment-icon">PayPal</span>
+        <span class="payment-icon">MC</span>
+        <span class="payment-icon">VISA</span>
+        <span class="payment-icon">AMEX</span>
+        <span class="payment-icon">Discover</span>
+      </div>
+      <div class="footer-socials">
+        <a class="footer-social-btn" href="https://facebook.com/rejoicedanceministry" target="_blank" rel="noopener" title="Facebook">f</a>
+        <a class="footer-social-btn" href="https://twitter.com/rejoicedanceministry" target="_blank" rel="noopener" title="Twitter">𝕏</a>
+        <a class="footer-social-btn" href="https://pinterest.com/rejoicedanceministry" target="_blank" rel="noopener" title="Pinterest">P</a>
+        <a class="footer-social-btn" href="https://instagram.com/rejoicedanceministry" target="_blank" rel="noopener" title="Instagram">📷</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Information</h4>
+      <ul>
+        <li><a href="{{ pages['about'].url }}">About Rejoice</a></li>
+        <li><a href="{{ pages['delivery-information'].url }}">Delivery Information</a></li>
+        <li><a href="{{ shop.privacy_policy.url }}">Privacy Policy</a></li>
+        <li><a href="{{ shop.terms_of_service.url }}">Terms &amp; Conditions</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Store</h4>
+      <ul>
+        <li><a href="{{ routes.collections_url }}">Online Store</a></li>
+        <li><a href="{{ routes.cart_url }}">My Cart</a></li>
+        <li><a href="{{ routes.account_url }}">My Account</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col footer-contact-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="{{ pages['contact'].url }}">Contact Us</a></li>
+        <li>P 305.558.2212</li>
+        <li>F 305.558.2253</li>
+        <li>2479 West 80 Street<br>Hialeah, Florida 33016</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    &copy; {{ 'now' | date: '%Y' }} {{ shop.name }} &middot; All Rights Reserved
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo"
+    }
+  ]
+}
+{% endschema %}

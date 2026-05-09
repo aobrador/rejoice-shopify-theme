@@ -1,0 +1,31 @@
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: 'Search' %}
+  <h1>Search Results</h1>
+</div>
+
+<div class="section">
+  <form action="{{ routes.search_url }}" method="get" style="max-width:600px;margin:0 auto 60px;display:flex;gap:0;border:1px solid var(--border);border-radius:50px;overflow:hidden;box-shadow:var(--shadow-sm);">
+    <input type="text" name="q" value="{{ search.terms | escape }}" placeholder="Search for garments, colors, styles…"
+           style="flex:1;border:none;padding:16px 24px;font-size:1rem;background:var(--white);outline:none;color:var(--text);" />
+    <button type="submit" class="btn-primary" style="border-radius:0 50px 50px 0;padding:16px 28px;margin:0;">Search</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- if search.results_count > 0 -%}
+      <p style="color:var(--text-muted);margin-bottom:32px;text-align:center;">{{ search.results_count }} results for <strong>"{{ search.terms }}"</strong></p>
+      <div class="products-grid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'product-card', product: item %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div style="text-align:center;padding:60px 0;">
+        <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+        <p style="color:var(--text-muted);font-size:1rem;">No results for <strong>"{{ search.terms }}"</strong>. Try a different term.</p>
+        <a class="btn-primary" href="{{ routes.collections_url }}" style="display:inline-block;margin-top:28px;">Browse All Products</a>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+</div>

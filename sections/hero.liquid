@@ -1,0 +1,31 @@
+<section class="hero">
+  <div class="particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✨ {{ section.settings.badge_text }}</div>
+    <h1>
+      {{ section.settings.heading_line1 }}<br/>
+      <span>{{ section.settings.heading_line2 }}</span>
+    </h1>
+    <p>{{ section.settings.subheading }}</p>
+    <div class="hero-buttons">
+      <a class="btn-primary" href="{{ routes.collections_url }}">{{ section.settings.cta_primary }}</a>
+      <a class="btn-secondary" href="{{ pages['about'].url }}">{{ section.settings.cta_secondary }}</a>
+    </div>
+  </div>
+  <div class="hero-divider"></div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "text", "id": "badge_text", "label": "Badge text", "default": "Called to Dress God's People" },
+    { "type": "text", "id": "heading_line1", "label": "Heading — line 1 (white)", "default": "Called to Dress" },
+    { "type": "text", "id": "heading_line2", "label": "Heading — line 2 (gold shimmer)", "default": "God's People" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Exquisite praise & worship dancewear handcrafted for those who glorify the King of Kings through movement and beauty." },
+    { "type": "text", "id": "cta_primary", "label": "Primary button", "default": "Explore Collection" },
+    { "type": "text", "id": "cta_secondary", "label": "Secondary button", "default": "Our Story" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

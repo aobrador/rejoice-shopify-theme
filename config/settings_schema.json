@@ -1,0 +1,37 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Rejoice Dance Ministry",
+    "theme_version": "1.0.0",
+    "theme_author": "Rejoice Dance Ministry",
+    "theme_documentation_url": "https://rejoicedanceministry.com",
+    "theme_support_url": "https://rejoicedanceministry.com/pages/contact"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent color (purple)",
+        "default": "#6A0DAD"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Gold color",
+        "default": "#C9A84C"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" },
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_twitter", "label": "Twitter / X URL" },
+      { "type": "text", "id": "social_pinterest", "label": "Pinterest URL" },
+      { "type": "text", "id": "social_youtube", "label": "YouTube URL" }
+    ]
+  }
+]
