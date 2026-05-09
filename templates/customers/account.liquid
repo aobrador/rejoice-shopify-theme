@@ -18,7 +18,7 @@
       <nav style="display:flex;flex-direction:column;gap:4px;">
         <a href="{{ routes.account_url }}" style="padding:10px 14px;border-radius:8px;color:var(--purple);font-weight:700;font-size:0.88rem;text-decoration:none;background:var(--purple-pale);">📦 My Orders</a>
         <a href="{{ routes.account_addresses_url }}" style="padding:10px 14px;border-radius:8px;color:var(--text-mid);font-size:0.88rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--purple-pale)'" onmouseout="this.style.background='transparent'">📍 Addresses</a>
-        <a href="{{ routes.collections_url }}" style="padding:10px 14px;border-radius:8px;color:var(--text-mid);font-size:0.88rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--purple-pale)'" onmouseout="this.style.background='transparent'">🛍️ Shop</a>
+        <a href="{{ routes.all_products_collection_url }}" style="padding:10px 14px;border-radius:8px;color:var(--text-mid);font-size:0.88rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--purple-pale)'" onmouseout="this.style.background='transparent'">🛍️ Shop</a>
         <a href="{{ routes.account_logout_url }}" style="padding:10px 14px;border-radius:8px;color:#c0392b;font-size:0.88rem;text-decoration:none;margin-top:12px;border-top:1px solid var(--border);padding-top:16px;">← Sign Out</a>
       </nav>
     </div>
@@ -55,7 +55,7 @@
         <div style="text-align:center;padding:60px 20px;background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius-lg);">
           <div style="font-size:3rem;margin-bottom:16px;">📦</div>
           <p style="color:var(--text-muted);margin-bottom:24px;">You haven't placed any orders yet.</p>
-          <a class="btn-primary" href="{{ routes.collections_url }}">Start Shopping</a>
+          <a class="btn-primary" href="{{ routes.all_products_collection_url }}">Start Shopping</a>
         </div>
       {%- endif -%}
     </div>
