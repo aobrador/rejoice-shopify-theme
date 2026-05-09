@@ -621,6 +621,12 @@ html { scroll-behavior: smooth; }
   font-size: 0.85rem; color: var(--text); font-family: inherit;
 }
 .sidebar-search-input::placeholder { color: var(--text-muted); }
+.sidebar-search-clear {
+  background: none; border: none; padding: 2px; cursor: pointer;
+  color: var(--text-muted); display: flex; align-items: center;
+  border-radius: 4px; transition: color 0.15s, background 0.15s; flex-shrink: 0;
+}
+.sidebar-search-clear:hover { color: var(--purple); background: var(--purple-pale); }
 
 /* ── Product card image improvements ────────────────────── */
 .product-image { position: relative; }

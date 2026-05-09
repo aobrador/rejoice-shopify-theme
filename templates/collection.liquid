@@ -23,6 +23,9 @@
       <div class="sidebar-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="sidebar-search-input" placeholder="Search products…" class="sidebar-search-input" autocomplete="off" />
+        <button type="button" id="sidebar-search-clear" class="sidebar-search-clear" aria-label="Clear search" style="display:none;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
     </div>
 
@@ -472,38 +475,41 @@ document.addEventListener('DOMContentLoaded', function() {
   var grid         = document.querySelector('.products-grid');
   var emptyMsg     = null; // will create lazily
 
+  var clearBtn = document.getElementById('sidebar-search-clear');
+
+  function runSearch(query) {
+    var visible = 0;
+    cards.forEach(function(card) {
+      var title = (card.querySelector('.product-name') || card).textContent.toLowerCase();
+      var match = !query || title.indexOf(query) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    if (countNum) countNum.textContent = visible;
+    if (!emptyMsg && grid) {
+      emptyMsg = document.createElement('div');
+      emptyMsg.className = 'search-empty-state';
+      emptyMsg.innerHTML = '<div style="font-size:2.5rem;margin-bottom:14px;color:var(--purple-light);">◆</div><h3>No products match</h3><p>Try a different search term.</p>';
+      grid.insertAdjacentElement('afterend', emptyMsg);
+    }
+    if (emptyMsg) emptyMsg.style.display = visible === 0 ? 'block' : 'none';
+    if (clearBtn) clearBtn.style.display = query ? 'flex' : 'none';
+  }
+
   if (searchInput && cards.length > 0) {
     searchInput.addEventListener('input', function() {
-      var query = this.value.trim().toLowerCase();
-      var visible = 0;
-
-      cards.forEach(function(card) {
-        var title = (card.querySelector('.product-name') || card).textContent.toLowerCase();
-        var match = !query || title.indexOf(query) !== -1;
-        card.style.display = match ? '' : 'none';
-        if (match) visible++;
-      });
-
-      // Update count badge
-      if (countNum) countNum.textContent = visible;
-
-      // Show/hide empty state
-      if (!emptyMsg && grid) {
-        emptyMsg = document.createElement('div');
-        emptyMsg.className = 'search-empty-state';
-        emptyMsg.innerHTML = '<div style="font-size:2.5rem;margin-bottom:14px;color:var(--purple-light);">◆</div><h3>No products match</h3><p>Try a different search term.</p>';
-        grid.insertAdjacentElement('afterend', emptyMsg);
-      }
-      if (emptyMsg) emptyMsg.style.display = visible === 0 ? 'block' : 'none';
+      runSearch(this.value.trim().toLowerCase());
     });
-
-    // Clear search on Escape
     searchInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        this.value = '';
-        this.dispatchEvent(new Event('input'));
-      }
+      if (e.key === 'Escape') { this.value = ''; runSearch(''); }
     });
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        runSearch('');
+        searchInput.focus();
+      });
+    }
   }
 });
 </script>

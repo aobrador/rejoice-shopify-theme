@@ -1,0 +1,147 @@
+<div class="section testimonials-section">
+  <div class="section-title fade-in">
+    <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+    <h2>{{ section.settings.heading }}</h2>
+    <div class="divider-purple"></div>
+  </div>
+
+  <div class="testimonials-grid">
+    {%- for i in (1..5) -%}
+      {%- assign quote_key  = 'quote_'  | append: i -%}
+      {%- assign name_key   = 'name_'   | append: i -%}
+      {%- assign role_key   = 'role_'   | append: i -%}
+      {%- assign stars_key  = 'stars_'  | append: i -%}
+      {%- if section.settings[quote_key] != blank -%}
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">
+            {%- assign star_count = section.settings[stars_key] | default: 5 -%}
+            {%- for s in (1..star_count) -%}★{%- endfor -%}
+          </div>
+          <blockquote class="testimonial-quote">"{{ section.settings[quote_key] }}"</blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">{{ section.settings[name_key] | slice: 0 }}</div>
+            <div>
+              <div class="testimonial-name">{{ section.settings[name_key] }}</div>
+              {%- if section.settings[role_key] != blank -%}
+                <div class="testimonial-role">{{ section.settings[role_key] }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+.testimonials-section { background: var(--white); }
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.testimonial-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.testimonial-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+.testimonial-stars {
+  color: #f59e0b;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+.testimonial-quote {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+.testimonial-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--purple-dark);
+}
+.testimonial-role {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+@media (max-width: 900px) {
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .testimonials-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "What Our Customers Say" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Worn with Joy, Made with Love" },
+    { "type": "header", "content": "Testimonial 1" },
+    { "type": "textarea", "id": "quote_1", "label": "Quote", "default": "The quality of my ephod is absolutely stunning. Every stitch shows such care and dedication. I wore it for our Easter Sunday worship and received so many compliments. Rejoice truly crafts garments worthy of the King!" },
+    { "type": "text", "id": "name_1", "label": "Name", "default": "Minister Sandra T." },
+    { "type": "text", "id": "role_1", "label": "Role / Church", "default": "Praise Dance Leader, Miami FL" },
+    { "type": "range", "id": "stars_1", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+    { "type": "header", "content": "Testimonial 2" },
+    { "type": "textarea", "id": "quote_2", "label": "Quote", "default": "I've ordered from Rejoice Dance Ministry three times now. Each garment is handcrafted with such love and arrives beautifully packaged. The sizing is perfect and the colors are even more vibrant in person." },
+    { "type": "text", "id": "name_2", "label": "Name", "default": "Sis. Gloria R." },
+    { "type": "text", "id": "role_2", "label": "Role / Church", "default": "Worship Dance Ministry, Atlanta GA" },
+    { "type": "range", "id": "stars_2", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+    { "type": "header", "content": "Testimonial 3" },
+    { "type": "textarea", "id": "quote_3", "label": "Quote", "default": "My daughter dances in a kids garment from Rejoice and it moves so beautifully with her. You can feel the Holy Spirit in the craftsmanship. This ministry truly has a gift from God." },
+    { "type": "text", "id": "name_3", "label": "Name", "default": "Pastor Evelyn M." },
+    { "type": "text", "id": "role_3", "label": "Role / Church", "default": "First Assembly Church, Orlando FL" },
+    { "type": "range", "id": "stars_3", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+    { "type": "header", "content": "Testimonial 4 (optional)" },
+    { "type": "textarea", "id": "quote_4", "label": "Quote", "default": "" },
+    { "type": "text", "id": "name_4", "label": "Name", "default": "" },
+    { "type": "text", "id": "role_4", "label": "Role / Church", "default": "" },
+    { "type": "range", "id": "stars_4", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+    { "type": "header", "content": "Testimonial 5 (optional)" },
+    { "type": "textarea", "id": "quote_5", "label": "Quote", "default": "" },
+    { "type": "text", "id": "name_5", "label": "Name", "default": "" },
+    { "type": "text", "id": "role_5", "label": "Role / Church", "default": "" },
+    { "type": "range", "id": "stars_5", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 }
+  ],
+  "presets": [{ "name": "Testimonials" }]
+}
+{% endschema %}
