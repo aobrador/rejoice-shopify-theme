@@ -1,6 +1,14 @@
 <div class="announcement-bar" id="announcement-bar">
   <div class="announcement-inner">
-    <span class="announcement-text">{{ section.settings.text }}</span>
+    <div class="announcement-track" id="announcement-track">
+      {%- assign messages = '' | split: '' -%}
+      {%- if section.settings.text_1 != blank -%}{%- assign messages = messages | push: section.settings.text_1 -%}{%- endif -%}
+      {%- if section.settings.text_2 != blank -%}{%- assign messages = messages | push: section.settings.text_2 -%}{%- endif -%}
+      {%- if section.settings.text_3 != blank -%}{%- assign messages = messages | push: section.settings.text_3 -%}{%- endif -%}
+      {%- for msg in messages -%}
+        <span class="announcement-slide{% if forloop.first %} active{% endif %}">{{ msg }}</span>
+      {%- endfor -%}
+    </div>
   </div>
   <button class="announcement-close" id="announcement-close" aria-label="Close">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -22,13 +30,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 @keyframes announcementShimmer {
   0% { background-position: 0% 0%; }
   100% { background-position: 200% 0%; }
 }
-.announcement-inner { flex: 1; }
-.announcement-text { color: rgba(255,255,255,0.95); }
+.announcement-inner { flex: 1; overflow: hidden; height: 1.2em; position: relative; }
+.announcement-slide {
+  display: block;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: rgba(255,255,255,0.95);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.announcement-slide.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.announcement-slide.exit {
+  opacity: 0;
+  transform: translateY(-100%);
+}
 .announcement-close {
   position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
   background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer;
@@ -46,8 +72,11 @@
   if (sessionStorage.getItem('ann-dismissed')) {
     var bar = document.getElementById('announcement-bar');
     if (bar) bar.classList.add('hidden');
+    return;
   }
+
   document.addEventListener('DOMContentLoaded', function() {
+    // Dismiss button
     var btn = document.getElementById('announcement-close');
     var bar = document.getElementById('announcement-bar');
     if (btn && bar) {
@@ -61,6 +90,19 @@
         sessionStorage.setItem('ann-dismissed', '1');
       });
     }
+
+    // Rotate messages
+    var slides = document.querySelectorAll('.announcement-slide');
+    if (slides.length <= 1) return;
+    var current = 0;
+    setInterval(function() {
+      slides[current].classList.remove('active');
+      slides[current].classList.add('exit');
+      var prev = current;
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+      setTimeout(function() { slides[prev].classList.remove('exit'); }, 500);
+    }, 4000);
   });
 })();
 </script>
@@ -69,12 +111,9 @@
 {
   "name": "Announcement Bar",
   "settings": [
-    {
-      "type": "text",
-      "id": "text",
-      "label": "Announcement text",
-      "default": "🌸 Spring Sale — 10% Off All Praise & Worship Apparel  |  Use Code REJOICE at Checkout"
-    }
+    { "type": "text", "id": "text_1", "label": "Message 1", "default": "🌸 Spring Sale — 10% Off All Praise & Worship Apparel  |  Use Code REJOICE at Checkout" },
+    { "type": "text", "id": "text_2", "label": "Message 2 (optional)", "default": "✂️ Handmade to Order in Hialeah, FL  |  Every Garment Crafted with Love" },
+    { "type": "text", "id": "text_3", "label": "Message 3 (optional)", "default": "" }
   ]
 }
 {% endschema %}

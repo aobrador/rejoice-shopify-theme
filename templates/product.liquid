@@ -140,9 +140,20 @@
               Add to Cart — <span id="btn-price">{{ product.price | money }}</span>
             </button>
           {%- else -%}
-            <button type="button" class="btn-add btn-add-large" disabled style="opacity:0.5;cursor:not-allowed;">
+            <button type="button" class="btn-add btn-add-large" disabled style="opacity:0.45;cursor:not-allowed;">
               Sold Out
             </button>
+            <div class="notify-me-wrap" id="notify-me-wrap">
+              <p class="notify-me-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                Get notified when this is back in stock
+              </p>
+              <div class="notify-me-row">
+                <input type="email" id="notify-email" class="notify-email-input" placeholder="your@email.com" />
+                <button type="button" class="notify-submit-btn" onclick="submitNotifyMe()">Notify Me</button>
+              </div>
+              <div id="notify-msg" class="notify-msg" style="display:none;"></div>
+            </div>
           {%- endif -%}
         </div>
 
@@ -534,7 +545,9 @@
       // Update availability
       var avail = document.getElementById('variant-availability');
       var addBtn = document.getElementById('add-to-cart-btn');
-      if (avail) avail.textContent = match.available ? '✅ In stock — ready to make' : '❌ Currently unavailable';
+      if (avail) avail.innerHTML = match.available
+        ? '<span class="avail-dot avail-in"></span> In stock — ready to make'
+        : '<span class="avail-dot avail-out"></span> Currently unavailable';
       if (addBtn) { addBtn.disabled = !match.available; addBtn.style.opacity = match.available ? '1' : '0.5'; }
 
       // Swap image if variant has one
@@ -914,6 +927,39 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Notify Me */
+.notify-me-wrap {
+  margin-top: 14px;
+  padding: 16px 18px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.notify-me-label {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 0.82rem; font-weight: 600; color: var(--text-mid);
+  margin-bottom: 10px;
+}
+.notify-me-label svg { color: var(--purple); flex-shrink: 0; }
+.notify-me-row { display: flex; gap: 8px; }
+.notify-email-input {
+  flex: 1; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 0.85rem; color: var(--text); font-family: inherit;
+  outline: none; transition: border-color 0.2s;
+}
+.notify-email-input:focus { border-color: var(--purple); }
+.notify-submit-btn {
+  padding: 10px 18px; border-radius: 8px;
+  background: var(--purple); color: #fff;
+  border: none; font-weight: 700; font-size: 0.82rem;
+  cursor: pointer; transition: background 0.2s; white-space: nowrap;
+}
+.notify-submit-btn:hover { background: var(--purple-dark); }
+.notify-msg { font-size: 0.8rem; margin-top: 8px; font-weight: 600; }
+.notify-msg.success { color: #16a34a; }
+.notify-msg.error   { color: #dc2626; }
+
 /* Processing time notice */
 .processing-notice {
   display: flex;
@@ -1015,6 +1061,39 @@
 </style>
 
 <script>
+/* ── Notify Me when sold out ── */
+function submitNotifyMe() {
+  var email = document.getElementById('notify-email');
+  var msg   = document.getElementById('notify-msg');
+  var btn   = document.querySelector('.notify-submit-btn');
+  if (!email || !email.value.includes('@')) {
+    msg.textContent = 'Please enter a valid email address.';
+    msg.className = 'notify-msg error';
+    msg.style.display = 'block';
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Sending…';
+  // Use Shopify's customer email signup (stores in Customers list)
+  fetch('/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'form_type=customer&utf8=✓&contact[email]=' + encodeURIComponent(email.value)
+      + '&contact[body]=' + encodeURIComponent('Back in stock request for: {{ product.title | escape }} ({{ shop.url }}{{ product.url }})')
+      + '&contact[tags]=back-in-stock'
+  }).then(function() {
+    msg.textContent = '✓ Got it! We\'ll email you when it\'s back.';
+    msg.className = 'notify-msg success';
+    msg.style.display = 'block';
+    email.value = '';
+  }).catch(function() {
+    msg.textContent = 'Something went wrong — please try again.';
+    msg.className = 'notify-msg error';
+    msg.style.display = 'block';
+  }).finally(function() {
+    btn.disabled = false; btn.textContent = 'Notify Me';
+  });
+}
+
 /* ── Tab switching ── */
 document.addEventListener('DOMContentLoaded', function() {
   var tabBtns   = document.querySelectorAll('.product-tab-btn');

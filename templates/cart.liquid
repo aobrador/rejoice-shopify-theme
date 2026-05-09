@@ -15,7 +15,7 @@
             {%- for item in cart.items -%}
               <div class="cart-item">
                 <a href="{{ item.url }}" class="cart-item-img-wrap">
-                  <img src="{{ item.image | img_url: '160x160', crop: 'center' }}"
+                  <img src="{{ item.image | img_url: '120x160', crop: 'top' }}"
                        alt="{{ item.image.alt | escape }}"
                        class="cart-item-img" />
                 </a>
@@ -146,6 +146,41 @@
   {%- endif -%}
 </div>
 
+<!-- You might also like — pulls from first cart item's collection, or all products -->
+{%- assign upsell_collection = cart.items.first.product.collections.first | default: collections.all -%}
+{%- assign upsell_products = upsell_collection.products -%}
+{%- assign shown_upsell = 0 -%}
+{%- assign has_upsell = false -%}
+{%- for p in upsell_products -%}
+  {%- unless cart.items | map: 'product_id' | contains: p.id -%}
+    {%- if shown_upsell < 4 -%}{%- assign has_upsell = true -%}{%- assign shown_upsell = shown_upsell | plus: 1 -%}{%- endif -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- if has_upsell -%}
+<div class="section-full section-gray cart-upsell">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div class="section-title" style="margin-bottom:32px;">
+      <span class="eyebrow">Complete Your Look</span>
+      <h2>You Might Also Like</h2>
+      <div class="divider-purple"></div>
+    </div>
+    <div class="products-grid">
+      {%- assign shown_upsell = 0 -%}
+      {%- for p in upsell_products -%}
+        {%- unless cart.items | map: 'product_id' | contains: p.id or shown_upsell >= 4 -%}
+          {% render 'product-card', product: p %}
+          {%- assign shown_upsell = shown_upsell | plus: 1 -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}
+<style>
+.cart-upsell { padding: 60px 48px; }
+@media(max-width:768px){ .cart-upsell { padding: 40px 20px; } }
+</style>
+
 <script>
 function setQty(btn, delta) {
   const input = btn.closest('.qty-wrap').querySelector('input[type=number]');
@@ -199,8 +234,9 @@ document.getElementById('discount-code') && document.getElementById('discount-co
 .cart-item:hover { background: var(--bg-soft); }
 .cart-item-img-wrap { flex-shrink: 0; }
 .cart-item-img {
-  width: 86px; height: 86px;
+  width: 80px; height: 107px;
   object-fit: cover;
+  object-position: top;
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }

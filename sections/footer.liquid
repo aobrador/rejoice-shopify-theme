@@ -68,12 +68,74 @@
         <li>2479 West 80 Street<br>Hialeah, Florida 33016</li>
       </ul>
     </div>
+
+    <div class="footer-col footer-newsletter-col">
+      <h4>Stay Inspired</h4>
+      <p class="footer-newsletter-text">New arrivals, ministry updates &amp; exclusive offers — straight to your inbox.</p>
+      <div id="footer-newsletter-form">
+        <div class="footer-email-row">
+          <input type="email" id="footer-email-input" class="footer-email-input" placeholder="your@email.com" />
+          <button type="button" class="footer-email-btn" onclick="footerSubscribe()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div id="footer-email-msg" style="display:none;margin-top:8px;font-size:0.78rem;font-weight:600;"></div>
+      </div>
+    </div>
   </div>
 
   <div class="footer-bottom">
     &copy; {{ 'now' | date: '%Y' }} Rejoice Dance Ministry &middot; All Rights Reserved
   </div>
 </footer>
+
+<style>
+.footer-newsletter-col { min-width: 200px; }
+.footer-newsletter-text { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.footer-email-row { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; }
+.footer-email-input {
+  flex: 1; padding: 10px 13px;
+  border: none; outline: none;
+  font-size: 0.83rem; color: var(--text); font-family: inherit;
+  background: var(--white);
+}
+.footer-email-btn {
+  padding: 10px 14px;
+  background: var(--purple); color: #fff;
+  border: none; cursor: pointer;
+  transition: background 0.2s;
+  display: flex; align-items: center;
+}
+.footer-email-btn:hover { background: var(--purple-dark); }
+</style>
+
+<script>
+function footerSubscribe() {
+  var input = document.getElementById('footer-email-input');
+  var msg   = document.getElementById('footer-email-msg');
+  if (!input || !input.value.includes('@')) {
+    msg.textContent = 'Please enter a valid email.';
+    msg.style.color = '#dc2626';
+    msg.style.display = 'block';
+    return;
+  }
+  fetch('/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'form_type=customer&utf8=✓&contact[email]=' + encodeURIComponent(input.value)
+      + '&contact[tags]=newsletter'
+  }).then(function() {
+    msg.textContent = '✓ You\'re subscribed! Thank you.';
+    msg.style.color = '#16a34a';
+    msg.style.display = 'block';
+    input.value = '';
+  }).catch(function() {
+    msg.textContent = 'Something went wrong — try again.';
+    msg.style.color = '#dc2626';
+    msg.style.display = 'block';
+  });
+}
+</script>
 
 {% schema %}
 {

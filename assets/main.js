@@ -54,10 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn && submitBtn.name === 'checkout') return;
       e.preventDefault();
 
-      // Button loading state
-      const atcBtn = document.getElementById('add-to-cart-btn');
+      // Button loading state — save original HTML to restore later
+      const atcBtn    = document.getElementById('add-to-cart-btn');
       const stickyBtn = document.getElementById('sticky-atc-btn');
-      if (atcBtn) { atcBtn.disabled = true; atcBtn.textContent = 'Adding…'; }
+      const origHTML  = atcBtn ? atcBtn.innerHTML : '';
+      if (atcBtn)    { atcBtn.disabled = true;    atcBtn.textContent = 'Adding…'; }
       if (stickyBtn) { stickyBtn.disabled = true; stickyBtn.textContent = 'Adding…'; }
 
       const formData = new FormData(productForm);
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         productForm.submit(); // fallback
       } finally {
-        if (atcBtn) { atcBtn.disabled = false; atcBtn.innerHTML = 'Add to Cart — <span id="btn-price">' + (atcBtn.dataset.price || '') + '</span>'; }
+        if (atcBtn)    { atcBtn.disabled = false;    atcBtn.innerHTML = origHTML; }
         if (stickyBtn) { stickyBtn.disabled = false; stickyBtn.textContent = 'Add to Cart'; }
       }
     });
