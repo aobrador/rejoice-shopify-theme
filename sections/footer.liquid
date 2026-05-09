@@ -8,24 +8,15 @@
       {%- endif -%}
       <p class="footer-tagline">Praise &amp; Worship Apparel</p>
 
-      {%- comment -%} Real Shopify payment icons {%- endcomment -%}
-      {%- if shop.enabled_payment_types != empty -%}
-        <div class="footer-payment-row" style="gap:8px;margin-bottom:18px;display:flex;flex-wrap:wrap;align-items:center;">
-          {%- for type in shop.enabled_payment_types -%}
-            <img src="{{ type | payment_type_img_url }}"
-                 alt="{{ type | replace: '_', ' ' | capitalize }}"
-                 style="height:26px;width:auto;border-radius:4px;background:#fff;padding:2px 4px;">
-          {%- endfor -%}
-        </div>
-      {%- else -%}
-        <div class="footer-payment-row">
-          <span class="payment-icon">PayPal</span>
-          <span class="payment-icon">MC</span>
-          <span class="payment-icon">VISA</span>
-          <span class="payment-icon">AMEX</span>
-          <span class="payment-icon">Discover</span>
-        </div>
-      {%- endif -%}
+      {%- comment -%} Payment icons — hardcoded Shopify CDN SVGs {%- endcomment -%}
+      <div class="footer-payment-row" style="gap:6px;margin-bottom:18px;display:flex;flex-wrap:wrap;align-items:center;">
+        {%- assign payment_types = 'visa,master,paypal,american_express,discover,shopify_pay' | split: ',' -%}
+        {%- for type in payment_types -%}
+          <img src="{{ type | payment_type_img_url }}"
+               alt="{{ type | replace: '_', ' ' | capitalize }}"
+               style="height:28px;width:auto;border-radius:4px;background:#fff;padding:2px 5px;">
+        {%- endfor -%}
+      </div>
 
       <div class="footer-socials">
         {%- if section.settings.facebook_url != blank -%}
