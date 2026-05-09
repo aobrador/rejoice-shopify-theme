@@ -369,7 +369,7 @@ footer {
   padding-bottom: 50px;
   border-bottom: 1px solid rgba(255,255,255,0.15);
 }
-.footer-brand-col img { height: 58px; width: auto; margin-bottom: 10px; display: block; }
+.footer-brand-col img { height: 64px; width: auto; margin-bottom: 10px; display: block; filter: brightness(0) invert(1); }
 .footer-tagline {
   font-size: 0.7rem; font-weight: 900; letter-spacing: 0.22em;
   color: var(--gold-light); text-transform: uppercase; margin-bottom: 18px;

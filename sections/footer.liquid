@@ -2,9 +2,9 @@
   <div class="footer-inner">
     <div class="footer-brand-col">
       {%- if section.settings.logo != blank -%}
-        <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}">
+        <img src="{{ section.settings.logo | img_url: '280x' }}" alt="{{ shop.name }}" style="height:64px;width:auto;">
       {%- else -%}
-        <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}">
+        <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" style="height:64px;width:auto;">
       {%- endif -%}
       <p class="footer-tagline">Praise &amp; Worship Apparel</p>
       <div class="footer-payment-row">
