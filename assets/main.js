@@ -98,32 +98,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Search overlay ────────────────────────────────────
-  const searchOpen    = document.getElementById('search-open');
-  const searchClose   = document.getElementById('search-close');
-  const searchOverlay = document.getElementById('search-overlay');
-  const searchInput   = document.getElementById('search-input');
+  // ── Inline nav search ─────────────────────────────────
+  const searchOpen  = document.getElementById('search-open');
+  const searchClose = document.getElementById('search-close');
+  const searchInput = document.getElementById('search-input');
+  const navEl2      = document.getElementById('nav');
   function openSearch() {
-    if (!searchOverlay) return;
-    searchOverlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => { if (searchInput) searchInput.focus(); }, 200);
+    if (!navEl2) return;
+    navEl2.classList.add('search-open');
+    setTimeout(() => { if (searchInput) searchInput.focus(); }, 50);
   }
   function closeSearch() {
-    if (!searchOverlay) return;
-    searchOverlay.classList.remove('open');
-    document.body.style.overflow = '';
+    if (!navEl2) return;
+    navEl2.classList.remove('search-open');
+    if (searchInput) searchInput.value = '';
   }
   if (searchOpen)  searchOpen.addEventListener('click', openSearch);
   if (searchClose) searchClose.addEventListener('click', closeSearch);
-  if (searchOverlay) {
-    searchOverlay.addEventListener('click', function(e) {
-      if (e.target === searchOverlay) closeSearch();
-    });
-  }
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeSearch();
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
   });
 
   // ── Button press ripple ───────────────────────────────

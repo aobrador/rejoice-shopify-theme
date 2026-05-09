@@ -15,6 +15,16 @@
     <li><a href="{{ pages['contact'].url }}" {% if page.handle == 'contact' %}class="active"{% endif %}>Contact</a></li>
   </ul>
 
+  <!-- Inline search bar (hidden by default, shown when search open) -->
+  <form action="/search" method="get" class="nav-search-form" id="nav-search-form">
+    <input type="hidden" name="type" value="product">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--purple);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" name="q" id="search-input" placeholder="Search products…" autocomplete="off" class="nav-search-input" />
+    <button type="button" class="nav-search-close" id="search-close" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </form>
+
   <div class="nav-actions">
     <button class="nav-icon-btn" id="search-open" aria-label="Search" title="Search">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
