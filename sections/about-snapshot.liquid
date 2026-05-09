@@ -6,10 +6,9 @@
           <img src="{{ section.settings.image | img_url: '800x600', crop: 'center' }}"
                alt="{{ section.settings.image.alt | default: 'Rejoice Dance Ministry dancers in praise garments' }}" />
         {%- else -%}
-          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--purple-light);">
-            <span style="font-size:5rem;">🩱</span>
-            <span style="font-family:'Cinzel',serif;font-size:1rem;color:var(--purple-dark);">Add an image in the editor</span>
-          </div>
+          <img src="{{ 'about-dancers.jpg' | asset_url }}"
+               alt="Rejoice Dance Ministry dancers in praise garments"
+               style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);" />
         {%- endif -%}
       </div>
       <div class="about-stat-card">

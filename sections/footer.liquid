@@ -7,18 +7,47 @@
         <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" style="height:64px;width:auto;">
       {%- endif -%}
       <p class="footer-tagline">Praise &amp; Worship Apparel</p>
-      <div class="footer-payment-row">
-        <span class="payment-icon">PayPal</span>
-        <span class="payment-icon">MC</span>
-        <span class="payment-icon">VISA</span>
-        <span class="payment-icon">AMEX</span>
-        <span class="payment-icon">Discover</span>
-      </div>
+
+      {%- comment -%} Real Shopify payment icons {%- endcomment -%}
+      {%- if shop.enabled_payment_types != empty -%}
+        <div class="footer-payment-row" style="gap:8px;margin-bottom:18px;display:flex;flex-wrap:wrap;align-items:center;">
+          {%- for type in shop.enabled_payment_types -%}
+            <img src="{{ type | payment_type_img_url }}"
+                 alt="{{ type | replace: '_', ' ' | capitalize }}"
+                 style="height:26px;width:auto;border-radius:4px;background:#fff;padding:2px 4px;">
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="footer-payment-row">
+          <span class="payment-icon">PayPal</span>
+          <span class="payment-icon">MC</span>
+          <span class="payment-icon">VISA</span>
+          <span class="payment-icon">AMEX</span>
+          <span class="payment-icon">Discover</span>
+        </div>
+      {%- endif -%}
+
       <div class="footer-socials">
-        <a class="footer-social-btn" href="https://facebook.com/rejoicedanceministry" target="_blank" rel="noopener" title="Facebook">f</a>
-        <a class="footer-social-btn" href="https://twitter.com/rejoicedanceministry" target="_blank" rel="noopener" title="Twitter">𝕏</a>
-        <a class="footer-social-btn" href="https://pinterest.com/rejoicedanceministry" target="_blank" rel="noopener" title="Pinterest">P</a>
-        <a class="footer-social-btn" href="https://instagram.com/rejoicedanceministry" target="_blank" rel="noopener" title="Instagram">📷</a>
+        {%- if section.settings.facebook_url != blank -%}
+          <a class="footer-social-btn" href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener" title="Facebook">f</a>
+        {%- else -%}
+          <a class="footer-social-btn" href="https://facebook.com/rejoicedanceministry" target="_blank" rel="noopener" title="Facebook">f</a>
+        {%- endif -%}
+        {%- if section.settings.twitter_url != blank -%}
+          <a class="footer-social-btn" href="{{ section.settings.twitter_url }}" target="_blank" rel="noopener" title="Twitter">𝕏</a>
+        {%- else -%}
+          <a class="footer-social-btn" href="https://twitter.com/rejoicedanceministry" target="_blank" rel="noopener" title="Twitter">𝕏</a>
+        {%- endif -%}
+        {%- if section.settings.pinterest_url != blank -%}
+          <a class="footer-social-btn" href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener" title="Pinterest">P</a>
+        {%- else -%}
+          <a class="footer-social-btn" href="https://pinterest.com/rejoicedanceministry" target="_blank" rel="noopener" title="Pinterest">P</a>
+        {%- endif -%}
+        {%- if section.settings.instagram_url != blank -%}
+          <a class="footer-social-btn" href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener" title="Instagram">📷</a>
+        {%- else -%}
+          <a class="footer-social-btn" href="https://instagram.com/rejoicedanceministry" target="_blank" rel="noopener" title="Instagram">📷</a>
+        {%- endif -%}
       </div>
     </div>
 
@@ -53,7 +82,7 @@
   </div>
 
   <div class="footer-bottom">
-    &copy; {{ 'now' | date: '%Y' }} {{ shop.name }} &middot; All Rights Reserved
+    &copy; {{ 'now' | date: '%Y' }} Rejoice Dance Ministry &middot; All Rights Reserved
   </div>
 </footer>
 
@@ -61,11 +90,11 @@
 {
   "name": "Footer",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Footer logo"
-    }
+    { "type": "image_picker", "id": "logo", "label": "Footer logo" },
+    { "type": "url", "id": "facebook_url", "label": "Facebook URL" },
+    { "type": "url", "id": "twitter_url", "label": "Twitter / X URL" },
+    { "type": "url", "id": "pinterest_url", "label": "Pinterest URL" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL" }
   ]
 }
 {% endschema %}
