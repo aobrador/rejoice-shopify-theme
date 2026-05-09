@@ -1,0 +1,117 @@
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: 'Terms & Conditions' %}
+  <h1>Terms &amp; Conditions</h1>
+  <p>Please read these terms carefully before placing your order</p>
+</div>
+
+<div class="section">
+  <div class="policy-content">
+
+    <div class="policy-block fade-in">
+      <div class="policy-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div>
+        <h2>Prices</h2>
+        <p>All prices are in <strong>US Dollars</strong>. Though we are able to ship our dance wear internationally, we only accept payment in US Dollars. We appreciate your understanding in this matter.</p>
+      </div>
+    </div>
+
+    <div class="policy-block fade-in">
+      <div class="policy-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div>
+        <h2>Payments</h2>
+        <p>For your convenience, we currently accept payment using <strong>Visa, Mastercard, American Express, Discover, or PayPal</strong>.</p>
+        <p>If you would like to inquire about a different payment method, please do not hesitate to contact us by phone at <a href="tel:+13055582212" style="color:var(--purple);font-weight:700;">305-558-2212</a> so that we may discuss alternate options with you personally.</p>
+      </div>
+    </div>
+
+    <div class="policy-block fade-in">
+      <div class="policy-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div>
+        <h2>Guarantee</h2>
+        <p>All garments are fully guaranteed for <strong>30 days</strong>. If a garment has a fabrication defect or problems with the fabric, the return will be accepted.</p>
+        <div class="policy-highlight">
+          No returns will be accepted if the fabric becomes stained or is not taken care of properly. We work very hard to deliver the best dance wear to each of our customers and expect no issues upon your receipt of your order — but we are aware that mistakes may happen. Please call us before attempting to mail your order back.
+        </div>
+      </div>
+    </div>
+
+    <div class="policy-block fade-in">
+      <div class="policy-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+      </div>
+      <div>
+        <h2>Returns</h2>
+        <p>At the present moment, we do not offer a <strong>cash refund</strong> for returned merchandise. Instead, we will offer <strong>Store Credit</strong>.</p>
+        <p>Please call our office at <a href="tel:+13055582212" style="color:var(--purple);font-weight:700;">305-558-2212</a> to authorize any return. No return will be accepted without prior authorization — please remember to call us before trying to return your order.</p>
+      </div>
+    </div>
+
+    <div class="scripture fade-in" style="margin-top:48px;text-align:center;font-size:1.05rem;">
+      We are all serving the same Lord. Please be kind when speaking to your brothers and sisters in Jesus Christ.
+    </div>
+
+    <div class="policy-cta fade-in">
+      <p>Questions about our policies? We're always happy to help.</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:20px;">
+        <a class="btn-primary" href="{{ pages['contact'].url }}">Contact Us</a>
+        <a class="btn-secondary" href="tel:+13055582212">Call 305-558-2212</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.policy-block {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+.policy-block:last-of-type { border-bottom: none; }
+.policy-icon {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  background: var(--purple-pale);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--purple);
+}
+.policy-block h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+  margin-bottom: 14px;
+}
+.policy-block p {
+  color: var(--text-mid);
+  line-height: 1.85;
+  margin-bottom: 12px;
+  font-size: 0.97rem;
+}
+.policy-block a { color: var(--purple); }
+.policy-cta {
+  text-align: center;
+  margin-top: 60px;
+  padding: 48px;
+  background: var(--purple-pale);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.policy-cta p { color: var(--text-muted); font-size: 1rem; }
+@media (max-width: 600px) {
+  .policy-block { flex-direction: column; gap: 16px; }
+}
+</style>

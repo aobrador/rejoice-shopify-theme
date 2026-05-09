@@ -1,0 +1,91 @@
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: 'Delivery Information' %}
+  <h1>Delivery Information</h1>
+  <p>Everything you need to know about shipping your sacred garments</p>
+</div>
+
+<div class="section">
+  <div class="policy-content">
+
+    <div class="policy-block fade-in">
+      <div class="policy-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div>
+        <h2>Shipping Options</h2>
+        <p>At the current moment, we ship all of our garments <strong>Priority Mail USPS 2 to 3 Day Service</strong>. We have been shipping garments with USPS for a very long time, and this has given us our best results for accurately and quickly delivering your garments.</p>
+      </div>
+    </div>
+
+    <div class="policy-block fade-in">
+      <div class="policy-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <h2>Handling Time</h2>
+        <p>We always strive to provide the highest quality product and service possible. We make all our garments to order — this means that your garments are <strong>tailor made just for you</strong>.</p>
+        <p>Because we make every piece special for our customers, it can take <strong>20–25 business days</strong> to complete the order and ship it out.</p>
+        <div class="policy-highlight">
+          Due to third-party delays, fabrics, trimmings, and other materials will sometimes arrive late and may delay your order. We appreciate your patience and are confident that the wait will be well worth it when you dance for the Lord in garments that were tailored to you.
+        </div>
+      </div>
+    </div>
+
+    <div class="policy-cta fade-in">
+      <p>Have questions about your order? We're here to help.</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:20px;">
+        <a class="btn-primary" href="{{ pages['contact'].url }}">Contact Us</a>
+        <a class="btn-secondary" href="{{ routes.collections_url }}">Shop Now</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.policy-block {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+.policy-block:last-of-type { border-bottom: none; }
+.policy-icon {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  background: var(--purple-pale);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--purple);
+}
+.policy-block h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--purple-dark);
+  margin-bottom: 14px;
+}
+.policy-block p {
+  color: var(--text-mid);
+  line-height: 1.85;
+  margin-bottom: 12px;
+  font-size: 0.97rem;
+}
+.policy-cta {
+  text-align: center;
+  margin-top: 60px;
+  padding: 48px;
+  background: var(--purple-pale);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.policy-cta p { color: var(--text-muted); font-size: 1rem; }
+@media (max-width: 600px) {
+  .policy-block { flex-direction: column; gap: 16px; }
+}
+</style>
