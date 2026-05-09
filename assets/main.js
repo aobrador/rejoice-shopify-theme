@@ -73,6 +73,71 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ── Nav scroll shadow ─────────────────────────────────
+  const navEl = document.getElementById('nav');
+  function updateNavShadow() {
+    if (!navEl) return;
+    if (window.scrollY > 10) {
+      navEl.classList.add('scrolled');
+    } else {
+      navEl.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', updateNavShadow, { passive: true });
+  updateNavShadow();
+
+  // ── Back to top ───────────────────────────────────────
+  const backToTop = document.getElementById('back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', function() {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // ── Search overlay ────────────────────────────────────
+  const searchOpen    = document.getElementById('search-open');
+  const searchClose   = document.getElementById('search-close');
+  const searchOverlay = document.getElementById('search-overlay');
+  const searchInput   = document.getElementById('search-input');
+  function openSearch() {
+    if (!searchOverlay) return;
+    searchOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { if (searchInput) searchInput.focus(); }, 200);
+  }
+  function closeSearch() {
+    if (!searchOverlay) return;
+    searchOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  if (searchOpen)  searchOpen.addEventListener('click', openSearch);
+  if (searchClose) searchClose.addEventListener('click', closeSearch);
+  if (searchOverlay) {
+    searchOverlay.addEventListener('click', function(e) {
+      if (e.target === searchOverlay) closeSearch();
+    });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeSearch();
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  });
+
+  // ── Button press ripple ───────────────────────────────
+  document.querySelectorAll('.btn-primary, .btn-secondary, .btn-add').forEach(btn => {
+    btn.addEventListener('mousedown', function() {
+      this.style.transform = 'scale(0.97)';
+    });
+    btn.addEventListener('mouseup', function() {
+      this.style.transform = '';
+    });
+    btn.addEventListener('mouseleave', function() {
+      this.style.transform = '';
+    });
+  });
 });
 
 // ── Fetch live cart count ─────────────────

@@ -520,3 +520,164 @@ footer {
   .filter-bar { gap: 8px; }
   .filter-btn { padding: 7px 14px; font-size: 0.75rem; }
 }
+
+/* ── smooth scroll (backup for browsers ignoring html attr) ── */
+html { scroll-behavior: smooth; }
+
+/* ── Back to top ──────────────────────────────────────────── */
+.back-to-top {
+  position: fixed;
+  bottom: 90px;
+  right: 30px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--purple-dark);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(75,0,130,0.35);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 888;
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+.back-to-top:hover { background: var(--purple); transform: translateY(-3px) !important; }
+
+/* ── Nav scrolled shadow ─────────────────────────────────── */
+#nav.scrolled {
+  box-shadow: 0 2px 20px rgba(75,0,130,0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Search overlay ──────────────────────────────────────── */
+.search-overlay {
+  position: fixed; inset: 0;
+  background: rgba(10, 0, 30, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 9000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.search-overlay.open { opacity: 1; pointer-events: all; }
+.search-close {
+  position: absolute; top: 28px; right: 32px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; border-radius: 50%;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s;
+}
+.search-close:hover { background: rgba(255,255,255,0.2); }
+.search-inner { width: 100%; max-width: 640px; padding: 0 24px; }
+.search-label {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+  font-weight: 700; margin-bottom: 20px;
+}
+.search-form {
+  display: flex; gap: 0;
+  border-bottom: 2px solid rgba(255,255,255,0.3);
+  padding-bottom: 8px;
+  transition: border-color 0.2s;
+}
+.search-form:focus-within { border-color: var(--gold); }
+.search-field {
+  flex: 1; background: none; border: none; outline: none;
+  color: #fff; font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 300;
+  font-family: inherit;
+}
+.search-field::placeholder { color: rgba(255,255,255,0.25); }
+.search-submit {
+  background: none; border: none; color: rgba(255,255,255,0.6);
+  cursor: pointer; padding: 8px; transition: color 0.2s;
+}
+.search-submit:hover { color: var(--gold); }
+.search-suggestions {
+  margin-top: 24px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.search-suggestions span {
+  color: rgba(255,255,255,0.4); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.search-suggestions a {
+  color: rgba(255,255,255,0.75); font-size: 0.85rem; font-weight: 600;
+  text-decoration: none; padding: 5px 14px;
+  border: 1px solid rgba(255,255,255,0.2); border-radius: 50px;
+  transition: all 0.2s;
+}
+.search-suggestions a:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.4); }
+
+/* ── Product card image improvements ────────────────────── */
+.product-image { position: relative; }
+.product-image-link { display: block; }
+.product-img-primary, .product-img-secondary {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity 0.45s ease;
+}
+.product-img-secondary { opacity: 0; }
+.product-card:hover .product-img-primary { opacity: 0; }
+.product-card:hover .product-img-secondary { opacity: 1; }
+.product-img-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(75, 0, 130, 0.42);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+.product-img-overlay span {
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1.5px solid rgba(255,255,255,0.85);
+  padding: 9px 22px;
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
+}
+.product-card:hover .product-img-overlay { opacity: 1; }
+
+/* ── Image loading shimmer ───────────────────────────────── */
+img { transition: opacity 0.3s ease; }
+img[loading="lazy"] { opacity: 0; }
+img[loading="lazy"].loaded { opacity: 1; }
+
+/* ── Smooth focus rings ──────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Nav icon button ─────────────────────────────────────── */
+.nav-icon-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--purple-dark); padding: 8px;
+  border-radius: 8px; display: flex; align-items: center;
+  transition: background 0.18s, color 0.18s;
+}
+.nav-icon-btn:hover { background: var(--purple-pale); color: var(--purple); }
+
+/* ── Category card image cover ───────────────────────────── */
+.category-bg img { transition: transform 0.5s ease; }
+.category-card:hover .category-bg img { transform: scale(1.06); }
+
+/* ── Feature item icon styling ───────────────────────────── */
+.feature-item .icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--purple-pale); margin: 0 auto 16px;
+  color: var(--purple);
+}
+
+/* ── Selection color ─────────────────────────────────────── */
+::selection { background: var(--purple-pale); color: var(--purple-dark); }

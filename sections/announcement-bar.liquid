@@ -1,6 +1,69 @@
-<div class="announcement-bar">
-  {{ section.settings.text }}
+<div class="announcement-bar" id="announcement-bar">
+  <div class="announcement-inner">
+    <span class="announcement-text">{{ section.settings.text }}</span>
+  </div>
+  <button class="announcement-close" id="announcement-close" aria-label="Close">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
 </div>
+
+<style>
+.announcement-bar {
+  background: linear-gradient(90deg, var(--purple-dark), var(--purple), var(--purple-dark));
+  background-size: 200% 100%;
+  animation: announcementShimmer 6s linear infinite;
+  color: #fff;
+  padding: 11px 48px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@keyframes announcementShimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+.announcement-inner { flex: 1; }
+.announcement-text { color: rgba(255,255,255,0.95); }
+.announcement-close {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer;
+  padding: 4px; line-height: 1; border-radius: 4px; transition: color 0.2s;
+}
+.announcement-close:hover { color: #fff; }
+.announcement-bar.hidden { display: none; }
+@media (max-width: 768px) {
+  .announcement-bar { padding: 10px 40px 10px 16px; font-size: 0.78rem; }
+}
+</style>
+
+<script>
+(function() {
+  if (sessionStorage.getItem('ann-dismissed')) {
+    var bar = document.getElementById('announcement-bar');
+    if (bar) bar.classList.add('hidden');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('announcement-close');
+    var bar = document.getElementById('announcement-bar');
+    if (btn && bar) {
+      btn.addEventListener('click', function() {
+        bar.style.transition = 'opacity 0.3s, max-height 0.4s';
+        bar.style.opacity = '0';
+        bar.style.maxHeight = '0';
+        bar.style.overflow = 'hidden';
+        bar.style.padding = '0';
+        setTimeout(function() { bar.classList.add('hidden'); }, 400);
+        sessionStorage.setItem('ann-dismissed', '1');
+      });
+    }
+  });
+})();
+</script>
 
 {% schema %}
 {
@@ -10,7 +73,7 @@
       "type": "text",
       "id": "text",
       "label": "Announcement text",
-      "default": "🌸 Spring Sale — 10% Off All Praise & Worship Apparel  |  Use Code REJOICE at Checkout"
+      "default": "🌸 Spring Sale — 10% Off All Praise & Worship Apparel  |  Use Code REJOICE at Checkout"
     }
   ]
 }
