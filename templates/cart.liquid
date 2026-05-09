@@ -5,70 +5,135 @@
 
 <div class="section">
   {%- if cart.item_count > 0 -%}
-    <form action="{{ routes.cart_url }}" method="post">
-      <div style="display:grid;grid-template-columns:1fr 360px;gap:50px;align-items:start;">
+    <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+      <div class="cart-layout">
 
-        {%- comment -%} Line items {%- endcomment -%}
+        {%- comment -%} Left: Line items + Notes {%- endcomment -%}
         <div>
-          {%- for item in cart.items -%}
-            <div style="display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);align-items:center;">
-              <a href="{{ item.url }}">
-                <img src="{{ item.image | img_url: '120x120', crop: 'center' }}"
-                     alt="{{ item.image.alt | escape }}"
-                     style="width:90px;height:90px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);" />
-              </a>
-              <div style="flex:1;">
-                <a href="{{ item.url }}" style="font-weight:700;color:var(--text);text-decoration:none;font-size:1rem;">{{ item.product.title }}</a>
-                {%- unless item.variant.title == 'Default Title' -%}
-                  <div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;">{{ item.variant.title }}</div>
-                {%- endunless -%}
-                <div style="font-size:0.9rem;color:var(--purple-dark);font-weight:700;margin-top:8px;">{{ item.price | money }}</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;">
-                  <button type="button" style="width:36px;height:36px;background:var(--bg-soft);border:none;font-size:1.1rem;cursor:pointer;color:var(--purple-dark);"
-                          onclick="setQty(this, -1)">−</button>
-                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0"
-                         style="width:44px;text-align:center;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);height:36px;font-size:0.95rem;background:var(--white);outline:none;" />
-                  <button type="button" style="width:36px;height:36px;background:var(--bg-soft);border:none;font-size:1.1rem;cursor:pointer;color:var(--purple-dark);"
-                          onclick="setQty(this, 1)">+</button>
-                </div>
-                <span style="font-weight:700;color:var(--text);min-width:64px;text-align:right;">{{ item.line_price | money }}</span>
-              </div>
-            </div>
-          {%- endfor -%}
 
-          <div style="margin-top:20px;display:flex;gap:12px;">
-            <button type="submit" name="update" class="btn-secondary" style="padding:12px 28px;font-size:0.82rem;">Update Cart</button>
+          {%- comment -%} Items {%- endcomment -%}
+          <div class="cart-items-wrap">
+            {%- for item in cart.items -%}
+              <div class="cart-item">
+                <a href="{{ item.url }}" class="cart-item-img-wrap">
+                  <img src="{{ item.image | img_url: '160x160', crop: 'center' }}"
+                       alt="{{ item.image.alt | escape }}"
+                       class="cart-item-img" />
+                </a>
+                <div class="cart-item-details">
+                  <a href="{{ item.url }}" class="cart-item-title">{{ item.product.title }}</a>
+                  {%- unless item.variant.title == 'Default Title' -%}
+                    <div class="cart-item-variant">{{ item.variant.title }}</div>
+                  {%- endunless -%}
+                  {%- if item.product.metafields.custom.sku or item.sku != blank -%}
+                    <div class="cart-item-sku">SKU: {{ item.sku }}</div>
+                  {%- endif -%}
+                  <div class="cart-item-price">{{ item.price | money }}</div>
+                </div>
+                <div class="cart-item-right">
+                  <div class="qty-wrap">
+                    <button type="button" class="qty-btn" onclick="setQty(this, -1)">−</button>
+                    <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="qty-input" />
+                    <button type="button" class="qty-btn" onclick="setQty(this, 1)">+</button>
+                  </div>
+                  <div class="cart-item-line-price">{{ item.line_price | money }}</div>
+                  <a href="{{ item.url_to_remove }}" class="cart-remove">Remove</a>
+                </div>
+              </div>
+            {%- endfor -%}
           </div>
+
+          <div style="margin-top:16px;">
+            <button type="submit" name="update" class="btn-secondary" style="padding:11px 26px;font-size:0.82rem;">Update Cart</button>
+          </div>
+
+          {%- comment -%} Order Notes {%- endcomment -%}
+          <div class="cart-notes-wrap">
+            <div class="cart-notes-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Order Notes</span>
+              <span class="optional-badge">optional</span>
+            </div>
+            <textarea id="cart-note" name="note" rows="4"
+              placeholder="Special instructions, customization requests, color preferences, or anything else we should know about your order..."
+              class="cart-notes-input">{{ cart.note }}</textarea>
+            <p class="cart-notes-hint">Our team reads every note — we'll reach out if we need clarification.</p>
+          </div>
+
         </div>
 
-        {%- comment -%} Order summary {%- endcomment -%}
-        <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;position:sticky;top:100px;">
-          <h3 style="font-family:'Cinzel',serif;color:var(--purple-dark);margin-bottom:24px;">Order Summary</h3>
+        {%- comment -%} Right: Order Summary {%- endcomment -%}
+        <div class="cart-summary">
+          <h3 class="cart-summary-title">Order Summary</h3>
 
           {%- for item in cart.items -%}
-            <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.88rem;color:var(--text-mid);">
-              <span>{{ item.product.title | truncatewords: 5 }} × {{ item.quantity }}</span>
+            <div class="cart-summary-line">
+              <span>{{ item.product.title | truncatewords: 5 }}
+                {%- unless item.variant.title == 'Default Title' -%} · <em style="font-style:normal;color:var(--text-muted);">{{ item.variant.title }}</em>{%- endunless -%}
+                × {{ item.quantity }}</span>
               <span>{{ item.line_price | money }}</span>
             </div>
           {%- endfor -%}
 
-          <div style="border-top:1px solid var(--border);margin:20px 0;padding-top:20px;">
-            <div style="display:flex;justify-content:space-between;font-size:1.05rem;font-weight:700;color:var(--text);">
+          {%- comment -%} Discount Code {%- endcomment -%}
+          <div class="discount-wrap">
+            <label class="discount-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              Discount Code
+            </label>
+            <div class="discount-input-row">
+              <input type="text" id="discount-code" placeholder="Enter code" class="discount-input" />
+              <button type="button" class="discount-apply-btn" onclick="applyDiscount()">Apply</button>
+            </div>
+            <div id="discount-msg" class="discount-msg" style="display:none;"></div>
+          </div>
+
+          <div class="cart-summary-total-wrap">
+            <div class="cart-summary-total-row">
               <span>Subtotal</span>
               <span>{{ cart.total_price | money }}</span>
             </div>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Shipping calculated at checkout</p>
+            <p class="cart-summary-shipping-note">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              Shipping &amp; taxes calculated at checkout
+            </p>
           </div>
 
-          <button type="submit" name="checkout" class="btn-primary" style="width:100%;text-align:center;padding:16px;font-size:0.95rem;">
+          <button type="submit" name="checkout" class="btn-primary cart-checkout-btn">
             Proceed to Checkout
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
 
-          <a href="{{ routes.collections_url }}" style="display:block;text-align:center;margin-top:14px;font-size:0.82rem;color:var(--purple);text-decoration:none;">← Continue Shopping</a>
-        </div>
+          <a href="{{ routes.collections_url }}" class="cart-continue-link">← Continue Shopping</a>
 
+          {%- comment -%} Processing Time Notice {%- endcomment -%}
+          <div class="cart-processing-notice">
+            <div class="cart-processing-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div class="cart-processing-title">Handmade &amp; Made to Order</div>
+              <div class="cart-processing-text">All garments are crafted by hand and made specifically for you. Processing time varies depending on current orders and fabric availability. We'll keep you updated every step of the way.</div>
+            </div>
+          </div>
+
+          {%- comment -%} Trust badges {%- endcomment -%}
+          <div class="cart-trust-row">
+            <div class="cart-trust-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Secure checkout
+            </div>
+            <div class="cart-trust-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Made with love
+            </div>
+            <div class="cart-trust-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              US shipping
+            </div>
+          </div>
+
+        </div>
       </div>
     </form>
 
@@ -84,15 +149,369 @@
 
 <script>
 function setQty(btn, delta) {
-  const input = btn.closest('div').querySelector('input[type=number]');
+  const input = btn.closest('.qty-wrap').querySelector('input[type=number]');
   input.value = Math.max(0, parseInt(input.value || 1) + delta);
 }
+
+function applyDiscount() {
+  const code = document.getElementById('discount-code').value.trim();
+  const msg  = document.getElementById('discount-msg');
+  if (!code) {
+    msg.style.display = 'block';
+    msg.style.color   = '#c0392b';
+    msg.textContent   = 'Please enter a discount code.';
+    return;
+  }
+  // Redirect to discount endpoint then back to cart
+  window.location.href = '/discount/' + encodeURIComponent(code) + '?redirect=/cart';
+}
+
+// Allow pressing Enter in discount field
+document.getElementById('discount-code') && document.getElementById('discount-code').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); applyDiscount(); }
+});
 </script>
 
 <style>
-@media (max-width: 768px) {
-  .section > form > div[style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
+/* ── Cart Layout ─────────────────────────────────────── */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 56px;
+  align-items: start;
+}
+
+/* ── Line Items ──────────────────────────────────────── */
+.cart-items-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.cart-item {
+  display: flex;
+  gap: 20px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  background: var(--white);
+  transition: background 0.15s;
+}
+.cart-item:last-child { border-bottom: none; }
+.cart-item:hover { background: var(--bg-soft); }
+.cart-item-img-wrap { flex-shrink: 0; }
+.cart-item-img {
+  width: 86px; height: 86px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.cart-item-details { flex: 1; min-width: 0; }
+.cart-item-title {
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.97rem;
+  display: block;
+  margin-bottom: 4px;
+}
+.cart-item-title:hover { color: var(--purple); }
+.cart-item-variant {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.cart-item-sku {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.cart-item-price {
+  font-size: 0.92rem;
+  color: var(--purple-dark);
+  font-weight: 700;
+}
+.cart-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.qty-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.qty-btn {
+  width: 34px; height: 34px;
+  background: var(--bg-soft);
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--purple-dark);
+  transition: background 0.15s;
+}
+.qty-btn:hover { background: var(--purple-light, #ede7f6); }
+.qty-input {
+  width: 42px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  height: 34px;
+  font-size: 0.92rem;
+  background: var(--white);
+  outline: none;
+}
+.cart-item-line-price {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.97rem;
+}
+.cart-remove {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+}
+.cart-remove:hover { color: #c0392b; }
+
+/* ── Order Notes ─────────────────────────────────────── */
+.cart-notes-wrap {
+  margin-top: 32px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.cart-notes-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.cart-notes-header svg { color: var(--purple); flex-shrink: 0; }
+.optional-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--border);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-left: 2px;
+}
+.cart-notes-input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.87rem;
+  color: var(--text);
+  background: var(--white);
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+.cart-notes-input:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+.cart-notes-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* ── Order Summary ───────────────────────────────────── */
+.cart-summary {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 4px 24px rgba(80,40,120,0.06);
+}
+.cart-summary-title {
+  font-family: 'Cinzel', serif;
+  color: var(--purple-dark);
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+.cart-summary-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  font-size: 0.86rem;
+  color: var(--text-mid);
+  gap: 12px;
+}
+.cart-summary-line span:first-child { flex: 1; }
+
+/* ── Discount ────────────────────────────────────────── */
+.discount-wrap {
+  margin: 20px 0 0;
+  padding: 16px;
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border);
+}
+.discount-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.discount-input-row {
+  display: flex;
+  gap: 8px;
+}
+.discount-input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+.discount-input:focus { border-color: var(--purple); }
+.discount-apply-btn {
+  padding: 9px 16px;
+  background: var(--purple-dark);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.discount-apply-btn:hover { opacity: 0.88; }
+.discount-msg {
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+/* ── Total ───────────────────────────────────────────── */
+.cart-summary-total-wrap {
+  border-top: 1px solid var(--border);
+  margin: 20px 0 20px;
+  padding-top: 18px;
+}
+.cart-summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.cart-summary-shipping-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+}
+
+/* ── Checkout Button ─────────────────────────────────── */
+.cart-checkout-btn {
+  width: 100%;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.cart-continue-link {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--purple);
+  text-decoration: none;
+}
+.cart-continue-link:hover { text-decoration: underline; }
+
+/* ── Processing Notice ───────────────────────────────── */
+.cart-processing-notice {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f9f4ff 0%, #f0ebff 100%);
+  border: 1px solid #d8c8f5;
+  border-radius: var(--radius);
+}
+.cart-processing-icon {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  background: var(--purple-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.cart-processing-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--purple-dark);
+  margin-bottom: 4px;
+}
+.cart-processing-text {
+  font-size: 0.79rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+}
+
+/* ── Trust Badges ────────────────────────────────────── */
+.cart-trust-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.cart-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.cart-trust-item svg { color: var(--purple); flex-shrink: 0; }
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
   }
+  .cart-summary { position: static; }
+}
+@media (max-width: 560px) {
+  .cart-item { flex-wrap: wrap; }
+  .cart-item-right { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
 }
 </style>
