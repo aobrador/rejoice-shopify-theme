@@ -4,6 +4,13 @@
 
 /* Cinzel font loaded via <link> in layout/theme.liquid */
 
+/* ── Shopify section wrapper reset ─────────── */
+.shopify-section {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   --purple:       #6A0DAD;
   --purple-dark:  #4B0082;

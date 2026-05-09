@@ -1,0 +1,72 @@
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: 'My Account' %}
+  <h1>Welcome, {{ customer.first_name | default: 'Friend' }}!</h1>
+</div>
+
+<div class="section">
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:40px;align-items:start;">
+
+    {%- comment -%} Sidebar {%- endcomment -%}
+    <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:64px;height:64px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#fff;margin:0 auto 12px;">
+          {{ customer.first_name | slice: 0 | upcase }}
+        </div>
+        <div style="font-weight:700;color:var(--text);">{{ customer.name }}</div>
+        <div style="font-size:0.82rem;color:var(--text-muted);">{{ customer.email }}</div>
+      </div>
+      <nav style="display:flex;flex-direction:column;gap:4px;">
+        <a href="{{ routes.account_url }}" style="padding:10px 14px;border-radius:8px;color:var(--purple);font-weight:700;font-size:0.88rem;text-decoration:none;background:var(--purple-pale);">📦 My Orders</a>
+        <a href="{{ routes.account_addresses_url }}" style="padding:10px 14px;border-radius:8px;color:var(--text-mid);font-size:0.88rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--purple-pale)'" onmouseout="this.style.background='transparent'">📍 Addresses</a>
+        <a href="{{ routes.collections_url }}" style="padding:10px 14px;border-radius:8px;color:var(--text-mid);font-size:0.88rem;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--purple-pale)'" onmouseout="this.style.background='transparent'">🛍️ Shop</a>
+        <a href="{{ routes.account_logout_url }}" style="padding:10px 14px;border-radius:8px;color:#c0392b;font-size:0.88rem;text-decoration:none;margin-top:12px;border-top:1px solid var(--border);padding-top:16px;">← Sign Out</a>
+      </nav>
+    </div>
+
+    {%- comment -%} Orders {%- endcomment -%}
+    <div>
+      <h2 style="font-family:'Cinzel',serif;color:var(--purple-dark);font-size:1.3rem;margin-bottom:24px;">Order History</h2>
+
+      {%- if customer.orders.size > 0 -%}
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          {%- for order in customer.orders -%}
+            <a href="{{ order.customer_url }}" style="text-decoration:none;display:block;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow='none'">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <div>
+                  <div style="font-weight:700;color:var(--text);margin-bottom:4px;">Order {{ order.name }}</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);">{{ order.created_at | date: '%B %d, %Y' }} · {{ order.line_items.size }} item{{ order.line_items.size | plural: '', 's' }}</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-weight:700;color:var(--purple-dark);margin-bottom:4px;">{{ order.total_price | money }}</div>
+                  <span style="display:inline-block;padding:3px 12px;border-radius:50px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+                    {%- case order.financial_status -%}
+                      {%- when 'paid' -%}background:#e8f5e9;color:#2e7d32;
+                      {%- when 'pending' -%}background:#fff8e1;color:#f57f17;
+                      {%- when 'refunded' -%}background:#fce4ec;color:#c62828;
+                      {%- else -%}background:var(--purple-pale);color:var(--purple-dark);
+                    {%- endcase -%}
+                  ">{{ order.financial_status | capitalize }}</span>
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div style="text-align:center;padding:60px 20px;background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius-lg);">
+          <div style="font-size:3rem;margin-bottom:16px;">📦</div>
+          <p style="color:var(--text-muted);margin-bottom:24px;">You haven't placed any orders yet.</p>
+          <a class="btn-primary" href="{{ routes.collections_url }}">Start Shopping</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  .section > div[style*="grid-template-columns:280px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

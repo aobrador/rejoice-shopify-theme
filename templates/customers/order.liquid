@@ -1,0 +1,94 @@
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: order.name %}
+  <h1>Order {{ order.name }}</h1>
+  <p>Placed on {{ order.created_at | date: '%B %d, %Y' }}</p>
+</div>
+
+<div class="section">
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;">
+
+    {%- comment -%} Items {%- endcomment -%}
+    <div>
+      <h2 style="font-family:'Cinzel',serif;color:var(--purple-dark);font-size:1.2rem;margin-bottom:20px;">Items Ordered</h2>
+
+      {%- for line_item in order.line_items -%}
+        <div style="display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);align-items:center;">
+          {%- if line_item.image -%}
+            <img src="{{ line_item.image | img_url: '100x100', crop: 'center' }}"
+                 alt="{{ line_item.title | escape }}"
+                 style="width:72px;height:72px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);" />
+          {%- else -%}
+            <div style="width:72px;height:72px;background:var(--purple-pale);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:2rem;">🩱</div>
+          {%- endif -%}
+          <div style="flex:1;">
+            <div style="font-weight:700;color:var(--text);">{{ line_item.product.title }}</div>
+            {%- unless line_item.variant.title == 'Default Title' -%}
+              <div style="font-size:0.82rem;color:var(--text-muted);margin-top:2px;">{{ line_item.variant.title }}</div>
+            {%- endunless -%}
+            <div style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;">Qty: {{ line_item.quantity }}</div>
+          </div>
+          <div style="font-weight:700;color:var(--purple-dark);">{{ line_item.final_line_price | money }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} Summary sidebar {%- endcomment -%}
+    <div>
+      <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;">
+        <h3 style="font-family:'Cinzel',serif;color:var(--purple-dark);font-size:1rem;margin-bottom:20px;">Order Summary</h3>
+
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.88rem;color:var(--text-mid);">
+          <span>Subtotal</span><span>{{ order.subtotal_price | money }}</span>
+        </div>
+        {%- for shipping_method in order.shipping_methods -%}
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.88rem;color:var(--text-mid);">
+            <span>Shipping ({{ shipping_method.title }})</span>
+            <span>{{ shipping_method.price | money }}</span>
+          </div>
+        {%- endfor -%}
+        {%- for tax_line in order.tax_lines -%}
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.88rem;color:var(--text-mid);">
+            <span>Tax</span><span>{{ tax_line.price | money }}</span>
+          </div>
+        {%- endfor -%}
+        <div style="display:flex;justify-content:space-between;font-size:1.05rem;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:16px;margin-top:6px;">
+          <span>Total</span><span>{{ order.total_price | money }}</span>
+        </div>
+
+        <div style="margin-top:20px;">
+          <span style="display:inline-block;padding:5px 14px;border-radius:50px;font-size:0.75rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+            {%- case order.financial_status -%}
+              {%- when 'paid' -%}background:#e8f5e9;color:#2e7d32;
+              {%- when 'pending' -%}background:#fff8e1;color:#f57f17;
+              {%- else -%}background:var(--purple-pale);color:var(--purple-dark);
+            {%- endcase -%}
+          ">Payment: {{ order.financial_status | capitalize }}</span>
+        </div>
+      </div>
+
+      {%- if order.shipping_address -%}
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+          <h3 style="font-family:'Cinzel',serif;color:var(--purple-dark);font-size:0.9rem;margin-bottom:14px;">📍 Ship To</h3>
+          <address style="font-style:normal;font-size:0.88rem;color:var(--text-mid);line-height:1.7;">
+            {{ order.shipping_address.name }}<br/>
+            {{ order.shipping_address.address1 }}<br/>
+            {%- if order.shipping_address.address2 != blank -%}{{ order.shipping_address.address2 }}<br/>{%- endif -%}
+            {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br/>
+            {{ order.shipping_address.country }}
+          </address>
+        </div>
+      {%- endif -%}
+
+      <a href="{{ routes.account_url }}" style="display:block;text-align:center;margin-top:16px;font-size:0.85rem;color:var(--purple);text-decoration:none;">← Back to My Account</a>
+    </div>
+
+  </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  .section > div[style*="grid-template-columns:1fr 320px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

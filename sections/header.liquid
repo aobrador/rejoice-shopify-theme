@@ -16,6 +16,11 @@
   </ul>
 
   <div class="nav-actions">
+    {%- if customer -%}
+      <a href="{{ routes.account_url }}" style="font-size:1.3rem;color:var(--text-mid);text-decoration:none;" title="My Account">👤</a>
+    {%- else -%}
+      <a href="{{ routes.account_login_url }}" style="font-size:1.3rem;color:var(--text-mid);text-decoration:none;" title="Sign In">👤</a>
+    {%- endif -%}
     <a class="nav-cart" href="{{ routes.cart_url }}">
       🛒<span class="cart-badge" id="cart-badge">{{ cart.item_count }}</span>
     </a>
