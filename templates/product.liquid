@@ -15,9 +15,9 @@
         <div class="gallery-zoom-wrap" id="zoom-wrap">
           {%- if product.images.size > 0 -%}
             <img id="main-img"
-                 src="{{ product.images[0] | img_url: '800x800', crop: 'center' }}"
+                 src="{{ product.images[0] | img_url: '1000x' }}"
                  alt="{{ product.images[0].alt | escape }}"
-                 data-zoom="{{ product.images[0] | img_url: '1600x1600' }}" />
+                 data-zoom="{{ product.images[0].src }}" />
           {%- else -%}
             <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:6rem;">🩱</div>
           {%- endif -%}
@@ -43,7 +43,7 @@
         <div class="gallery-thumbs" id="gallery-thumbs">
           {%- for image in product.images -%}
             <img class="gallery-thumb {% if forloop.first %}active{% endif %}"
-                 src="{{ image | img_url: '120x120', crop: 'center' }}"
+                 src="{{ image | img_url: '160x160' }}"
                  alt="{{ image.alt | escape }}"
                  onclick="galleryGo({{ forloop.index0 }})"
                  loading="lazy" />
@@ -193,7 +193,7 @@
   var productVariants = {{ product.variants | json }};
   var productImages   = [
     {%- for img in product.images -%}
-      { src: "{{ img | img_url: '800x800', crop: 'center' }}", zoom: "{{ img | img_url: '1600x1600' }}", alt: "{{ img.alt | escape }}" }{% unless forloop.last %},{% endunless %}
+      { src: "{{ img | img_url: '1000x' }}", zoom: "{{ img.src }}", alt: "{{ img.alt | escape }}" }{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
   ];
   var currentImg   = 0;
@@ -224,6 +224,25 @@
     var next = (currentImg + delta + productImages.length) % productImages.length;
     galleryGo(next);
   }
+
+  /* ── Auto-slideshow ── */
+  var autoSlide = null;
+  function startAutoSlide() {
+    if (productImages.length < 2) return;
+    autoSlide = setInterval(function() { galleryStep(1); }, 3500);
+  }
+  function stopAutoSlide() {
+    clearInterval(autoSlide);
+  }
+  startAutoSlide();
+  // Pause on hover, resume on leave
+  document.addEventListener('DOMContentLoaded', function() {
+    var gallery = document.getElementById('gallery-main');
+    if (gallery) {
+      gallery.addEventListener('mouseenter', stopAutoSlide);
+      gallery.addEventListener('mouseleave', startAutoSlide);
+    }
+  });
 
   /* ── Hover zoom ── */
   document.addEventListener('DOMContentLoaded', function() {
@@ -345,21 +364,27 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
-  background: var(--purple-pale);
-  aspect-ratio: 1 / 1;
+  background: #f8f8f8;
   cursor: zoom-in;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .gallery-zoom-wrap {
   width: 100%;
-  height: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .gallery-zoom-wrap img {
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 680px;
   object-fit: contain;
   display: block;
-  transition: transform 0.1s ease;
+  transition: transform 0.12s ease;
   will-change: transform;
 }
 .gallery-arrow {

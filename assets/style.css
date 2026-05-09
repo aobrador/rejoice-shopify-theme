@@ -9,6 +9,7 @@
 .shopify-section-group,
 [id^="shopify-section-"] {
   display: block !important;
+  width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
@@ -16,11 +17,15 @@
   background: none !important;
   box-shadow: none !important;
   outline: none !important;
+  float: none !important;
 }
 
-/* Ensure body + html are always plain white */
+/* Ensure body + html are always plain white, full width */
 html, body {
   background-color: #FFFFFF !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden;
 }
 
 :root {
@@ -60,6 +65,7 @@ body { font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: 
 
 /* ── ANNOUNCEMENT BAR ──────────────────────── */
 .announcement-bar {
+  width: 100%;
   background: linear-gradient(90deg, var(--purple-dark), var(--purple), var(--purple-dark));
   background-size: 200% auto;
   animation: gradientShift 5s linear infinite;
@@ -76,6 +82,8 @@ body { font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: 
 /* ── NAVBAR ────────────────────────────────── */
 nav {
   position: sticky; top: 0; z-index: 1000;
+  width: 100%;
+  left: 0; right: 0;
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(12px);
   border-bottom: 2px solid var(--border);
@@ -356,6 +364,7 @@ tbody td { padding: 13px 20px; color: var(--text); border-bottom: 1px solid var(
 
 /* FOOTER */
 footer {
+  width: 100%;
   background: linear-gradient(135deg, #6A0DAD 0%, #4B0082 40%, #1A3A8F 100%);
   color: #fff;
   padding: 70px 48px 30px;
