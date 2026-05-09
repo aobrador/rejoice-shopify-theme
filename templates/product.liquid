@@ -346,25 +346,31 @@
   ];
 
   /* ── Gallery navigation ── */
-  function galleryGo(index) {
+  // scrollToThumb: set false when called from auto-slideshow so the page never jumps
+  function galleryGo(index, scrollToThumb) {
     currentImg = index;
     var img  = productImages[index];
-    var main = document.getElementById('main-img');
-    if (main && img) {
-      main.src = img.src;
-      main.dataset.zoom = img.zoom;
-      main.alt = img.alt;
+    var mainEl = document.getElementById('main-img');
+    if (mainEl && img) {
+      mainEl.src = img.src;
+      mainEl.dataset.zoom = img.zoom;
+      mainEl.alt = img.alt;
     }
     document.querySelectorAll('.gallery-thumb').forEach((t, i) => t.classList.toggle('active', i === index));
     document.querySelectorAll('.gallery-dot').forEach((d, i)  => d.classList.toggle('active', i === index));
-    // scroll thumb into view
-    var thumbs = document.querySelectorAll('.gallery-thumb');
-    if (thumbs[index]) thumbs[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    // Only scroll thumbnail strip horizontally (not the whole page) — and only when user clicks
+    if (scrollToThumb !== false) {
+      var strip = document.getElementById('gallery-thumbs');
+      var thumbs = strip ? strip.querySelectorAll('.gallery-thumb') : [];
+      if (thumbs[index]) {
+        thumbs[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
   }
 
   function galleryStep(delta) {
     var next = (currentImg + delta + productImages.length) % productImages.length;
-    galleryGo(next);
+    galleryGo(next, false); // auto-slideshow: never scroll the page
   }
 
   /* ── Auto-slideshow ── */

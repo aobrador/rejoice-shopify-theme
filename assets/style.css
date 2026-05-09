@@ -7,9 +7,11 @@
 /* ── Shopify section wrapper — strip ALL injected styles ── */
 .shopify-section,
 .shopify-section-group,
-[id^="shopify-section-"] {
+[id^="shopify-section-"],
+[class*="shopify-section"] {
   display: block !important;
   width: 100% !important;
+  max-width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
@@ -18,14 +20,37 @@
   box-shadow: none !important;
   outline: none !important;
   float: none !important;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
 }
 
-/* Ensure body + html are always plain white, full width */
+/* ── Full-width layout foundation ── */
 html, body {
   background-color: #FFFFFF !important;
   width: 100% !important;
   max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
   overflow-x: hidden;
+}
+
+/* Force main and every Shopify container div to be full width */
+main,
+#MainContent,
+.main-content,
+.page-container,
+.page-width,
+[id="MainContent"],
+body > div,
+body > div > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
 }
 
 :root {
