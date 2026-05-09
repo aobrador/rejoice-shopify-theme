@@ -3,7 +3,7 @@
     {%- if section.settings.logo != blank -%}
       <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}" height="42">
     {%- else -%}
-      <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" height="42">
+      <span style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--purple-dark);letter-spacing:0.04em;">{{ shop.name }}</span>
     {%- endif -%}
   </a>
 

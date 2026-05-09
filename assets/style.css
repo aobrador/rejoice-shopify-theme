@@ -4,11 +4,23 @@
 
 /* Cinzel font loaded via <link> in layout/theme.liquid */
 
-/* ── Shopify section wrapper reset ─────────── */
-.shopify-section {
-  display: block;
-  margin: 0;
-  padding: 0;
+/* ── Shopify section wrapper — strip ALL injected styles ── */
+.shopify-section,
+.shopify-section-group,
+[id^="shopify-section-"] {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Ensure body + html are always plain white */
+html, body {
+  background-color: #FFFFFF !important;
 }
 
 :root {
