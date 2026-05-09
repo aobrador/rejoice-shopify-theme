@@ -1,0 +1,125 @@
+<!-- Hero -->
+<div class="page-hero">
+  {% render 'breadcrumb', breadcrumb_title: 'Contact' %}
+  <h1>Contact Us</h1>
+  <p>We'd love to hear from you — reach out any time</p>
+</div>
+
+<div class="section">
+  <div class="contact-grid">
+
+    <!-- Left: info + map -->
+    <div>
+      <div class="info-card fade-in">
+        <div class="info-icon">📍</div>
+        <div>
+          <h4>Our Address</h4>
+          <p>2479 West 80 Street<br>Hialeah, Florida 33016</p>
+        </div>
+      </div>
+      <div class="info-card fade-in">
+        <div class="info-icon">📞</div>
+        <div>
+          <h4>Phone</h4>
+          <p><a href="tel:+13055582212">305.558.2212</a></p>
+        </div>
+      </div>
+      <div class="info-card fade-in">
+        <div class="info-icon">📠</div>
+        <div>
+          <h4>Fax</h4>
+          <p>305.558.2253</p>
+        </div>
+      </div>
+      <div class="info-card fade-in">
+        <div class="info-icon">🕐</div>
+        <div>
+          <h4>Hours</h4>
+          <p>Mon – Fri: 9am – 5pm<br>Sat: By Appointment</p>
+        </div>
+      </div>
+
+      <!-- Google Maps embed -->
+      <div class="fade-in" style="margin-top:32px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-sm);">
+        <iframe
+          title="Rejoice Dance Ministry location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3591.8!2d-80.3167!3d25.8700!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88d9b7b0b0b0b0b0%3A0x0!2s2479+W+80th+St%2C+Hialeah%2C+FL+33016!5e0!3m2!1sen!2sus!4v1"
+          width="100%"
+          height="260"
+          style="border:0;display:block;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+      <a href="https://maps.google.com/?q=2479+W+80+Street+Hialeah+FL+33016"
+         target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;color:var(--purple);font-size:0.88rem;font-weight:700;text-decoration:none;">
+        📍 Get directions in Google Maps →
+      </a>
+    </div>
+
+    <!-- Right: contact form -->
+    <div class="contact-form fade-in">
+      <h2 style="font-family:'Cinzel',serif;color:var(--purple-dark);font-size:1.5rem;margin-bottom:8px;">Send Us a Message</h2>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:28px;">We typically respond within 1–2 business days.</p>
+
+      {%- form 'contact', id: 'ContactForm' -%}
+        {%- if form.posted_successfully? -%}
+          <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:var(--radius);padding:20px;margin-bottom:24px;color:#2e7d32;font-weight:600;">
+            🙏 Thank you! Your message has been sent. We'll be in touch soon.
+          </div>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <div style="background:#fff0f0;border:1px solid #f5c6cb;border-radius:var(--radius);padding:16px;margin-bottom:24px;color:#721c24;">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ContactForm-name">Name <span style="color:#c0392b;">*</span></label>
+            <input type="text" id="ContactForm-name" name="contact[name]"
+                   value="{{ form.name }}" autocomplete="name" required placeholder="Maria Santos" />
+          </div>
+          <div class="form-group">
+            <label for="ContactForm-phone">Phone Number</label>
+            <input type="tel" id="ContactForm-phone" name="contact[phone]"
+                   value="{{ form.phone }}" autocomplete="tel" placeholder="305-000-0000" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ContactForm-email">Email <span style="color:#c0392b;">*</span></label>
+          <input type="email" id="ContactForm-email" name="contact[email]"
+                 value="{{ form.email }}" autocomplete="email" required placeholder="your@email.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="ContactForm-subject">Subject</label>
+          <input type="text" id="ContactForm-subject" name="contact[subject]"
+                 placeholder="Order inquiry, custom request, etc." />
+        </div>
+
+        <div class="form-group">
+          <label for="ContactForm-body">Message <span style="color:#c0392b;">*</span></label>
+          <textarea id="ContactForm-body" name="contact[body]"
+                    required placeholder="Tell us how we can help you…">{{ form.body }}</textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%;padding:16px;font-size:0.95rem;text-align:center;">
+          Send Message
+        </button>
+      {%- endform -%}
+    </div>
+
+  </div>
+</div>
+
+<!-- Scripture strip -->
+<div class="features-strip" style="text-align:center;">
+  <p style="font-family:Georgia,serif;font-style:italic;color:var(--purple-dark);font-size:1.05rem;max-width:600px;margin:0 auto;">
+    "Praise Him with dancing and with musical instruments" — Psalm 150:4
+  </p>
+</div>
